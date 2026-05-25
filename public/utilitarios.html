@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ferramentas úteis e calculadoras da BigCorps">
+  <title>Utilitários - BigCorps Tecnologia</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .tool-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .tool-card:hover {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      transform: translateY(-4px);
+    }
+
+    .tool-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .tool-card h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .tool-card p {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .calculator {
+      background: #f8fafc;
+      padding: 2rem;
+      border-radius: var(--radius);
+      margin-top: 2rem;
+    }
+
+    .calculator-group {
+      margin-bottom: 2rem;
+    }
+
+    .calculator-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+
+    .calculator-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+    }
+
+    .calculator-result {
+      background: white;
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      border-left: 4px solid var(--primary);
+      margin-top: 1.5rem;
+    }
+
+    .result-label {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="root" class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <a href="/" class="logo">
+            <span>🚀</span>
+            <span>BigCorps</span>
+          </a>
+          <button class="mobile-menu-btn">☰</button>
+          <nav>
+            <ul>
+              <li><a href="/">Início</a></li>
+              <li><a href="/solucoes">Soluções</a></li>
+              <li><a href="/duvidas">Dúvidas</a></li>
+              <li><a href="/utilitarios" class="active">Utilitários</a></li>
+              <li><a href="/contato">Contato</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1">
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="container">
+          <h1>Ferramentas Úteis</h1>
+          <p>Calculadoras e recursos gratuitos para ajudar seu negócio</p>
+        </div>
+      </section>
+
+      <!-- Tools Section -->
+      <section class="section">
+        <div class="container">
+          <div class="section-title">
+            <h2>Ferramentas Disponíveis</h2>
+            <p>Acesse nossas calculadoras e recursos gratuitos</p>
+          </div>
+
+          <div class="tools-grid">
+            <div class="tool-card" onclick="switchTool('roi')">
+              <div class="tool-icon">📊</div>
+              <h3>Calculadora de ROI</h3>
+              <p>Calcule o retorno sobre investimento de uma automação</p>
+              <button class="btn btn-primary" style="width: 100%;">Acessar</button>
+            </div>
+            <div class="tool-card" onclick="switchTool('economia')">
+              <div class="tool-icon">💰</div>
+              <h3>Calculadora de Economia</h3>
+              <p>Estime quanto você pode economizar com automação</p>
+              <button class="btn btn-primary" style="width: 100%;">Acessar</button>
+            </div>
+            <div class="tool-card" onclick="switchTool('produtividade')">
+              <div class="tool-icon">⚡</div>
+              <h3>Calculadora de Produtividade</h3>
+              <p>Veja o ganho de produtividade em horas/mês</p>
+              <button class="btn btn-primary" style="width: 100%;">Acessar</button>
+            </div>
+            <div class="tool-card" onclick="switchTool('tempo')">
+              <div class="tool-icon">⏱️</div>
+              <h3>Calculadora de Tempo</h3>
+              <p>Calcule quanto tempo você gasta em tarefas manuais</p>
+              <button class="btn btn-primary" style="width: 100%;">Acessar</button>
+            </div>
+            <div class="tool-card" onclick="switchTool('erros')">
+              <div class="tool-icon">🎯</div>
+              <h3>Calculadora de Erros</h3>
+              <p>Estime o custo de erros operacionais</p>
+              <button class="btn btn-primary" style="width: 100%;">Acessar</button>
+            </div>
+            <div class="tool-card" onclick="switchTool('escalabilidade')">
+              <div class="tool-icon">📈</div>
+              <h3>Análise de Escalabilidade</h3>
+              <p>Veja como sua empresa pode crescer com automação</p>
+              <button class="btn btn-primary" style="width: 100%;">Acessar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Calculators Section -->
+      <section class="section" style="background: #f8fafc; padding: 4rem 0;">
+        <div class="container">
+          <!-- ROI Calculator -->
+          <div id="roi-tool" class="calculator" style="display: none;">
+            <h2>Calculadora de ROI</h2>
+            <p style="color: #64748b; margin-bottom: 2rem;">Calcule o retorno sobre investimento de uma automação em sua empresa</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+              <div>
+                <div class="calculator-group">
+                  <label>Investimento Inicial (R$)</label>
+                  <input type="number" id="roi-investment" placeholder="Ex: 50000" value="50000">
+                </div>
+                <div class="calculator-group">
+                  <label>Economia Mensal (R$)</label>
+                  <input type="number" id="roi-savings" placeholder="Ex: 10000" value="10000">
+                </div>
+                <div class="calculator-group">
+                  <label>Meses para Análise</label>
+                  <input type="number" id="roi-months" placeholder="Ex: 12" value="12">
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="calculateROI()">Calcular</button>
+              </div>
+              <div>
+                <div class="calculator-result">
+                  <div class="result-label">ROI em 12 meses</div>
+                  <div class="result-value" id="roi-result">0%</div>
+                </div>
+                <div class="calculator-result">
+                  <div class="result-label">Payback (meses)</div>
+                  <div class="result-value" id="roi-payback">0</div>
+                </div>
+                <div class="calculator-result">
+                  <div class="result-label">Lucro Líquido</div>
+                  <div class="result-value" id="roi-profit">R$ 0</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Economia Calculator -->
+          <div id="economia-tool" class="calculator" style="display: none;">
+            <h2>Calculadora de Economia</h2>
+            <p style="color: #64748b; margin-bottom: 2rem;">Estime quanto você pode economizar com automação</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+              <div>
+                <div class="calculator-group">
+                  <label>Funcionários envolvidos</label>
+                  <input type="number" id="econ-employees" placeholder="Ex: 5" value="5">
+                </div>
+                <div class="calculator-group">
+                  <label>Horas/dia em tarefas manuais</label>
+                  <input type="number" id="econ-hours" placeholder="Ex: 4" value="4" step="0.5">
+                </div>
+                <div class="calculator-group">
+                  <label>Salário médio/hora (R$)</label>
+                  <input type="number" id="econ-salary" placeholder="Ex: 50" value="50">
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="calculateEconomia()">Calcular</button>
+              </div>
+              <div>
+                <div class="calculator-result">
+                  <div class="result-label">Economia Mensal</div>
+                  <div class="result-value" id="econ-monthly">R$ 0</div>
+                </div>
+                <div class="calculator-result">
+                  <div class="result-label">Economia Anual</div>
+                  <div class="result-value" id="econ-annual">R$ 0</div>
+                </div>
+                <div class="calculator-result">
+                  <div class="result-label">Horas liberadas/mês</div>
+                  <div class="result-value" id="econ-hours-freed">0h</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Produtividade Calculator -->
+          <div id="produtividade-tool" class="calculator" style="display: none;">
+            <h2>Calculadora de Produtividade</h2>
+            <p style="color: #64748b; margin-bottom: 2rem;">Veja o ganho de produtividade em horas/mês</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+              <div>
+                <div class="calculator-group">
+                  <label>Processos a automatizar</label>
+                  <input type="number" id="prod-processes" placeholder="Ex: 10" value="10">
+                </div>
+                <div class="calculator-group">
+                  <label>Tempo/processo (horas/mês)</label>
+                  <input type="number" id="prod-time" placeholder="Ex: 20" value="20">
+                </div>
+                <div class="calculator-group">
+                  <label>% de automação esperada</label>
+                  <input type="number" id="prod-percentage" placeholder="Ex: 80" value="80" max="100">
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="calculateProdutividade()">Calcular</button>
+              </div>
+              <div>
+                <div class="calculator-result">
+                  <div class="result-label">Horas liberadas/mês</div>
+                  <div class="result-value" id="prod-hours">0h</div>
+                </div>
+                <div class="calculator-result">
+                  <div class="result-label">Dias úteis/mês</div>
+                  <div class="result-value" id="prod-days">0 dias</div>
+                </div>
+                <div class="calculator-result">
+                  <div class="result-label">Tempo economizado/ano</div>
+                  <div class="result-value" id="prod-year">0h</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tempo Calculator -->
+          <div id="tempo-tool" class="calculator" style="display: none;">
+            <h2>Calculadora de Tempo</h2>
+            <p style="color: #64748b; margin-bottom: 2rem;">Calcule quanto tempo você gasta em tarefas manuais</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+              <div>
+                <div class="calculator-group">
+                  <label>Tarefas/dia</label>
+                  <input type="number" id="tempo-tasks" placeholder="Ex: 50" value="50">
+                </div>
+                <div class="calculator-group">
+                  <label>Tempo/tarefa (minutos)</label>
+                  <input type="number" id="tempo-minutes" placeholder="Ex: 5" value="5">
+                </div>
+                <div class="calculator-group">
+                  <label>Dias úteis/mês</label>
+                  <input type="number" id="tempo-days" placeholder="Ex: 22" value="22">
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="calculateTempo()">Calcular</button>
+              </div>
+              <div>
+                <div class="calculator-result">
+                  <div class="result-label">Tempo/dia</div>
+                  <div class="result-value" id="tempo-daily">0h</div>
+                </div>
+                <div class="calculator-result">
+                  <div class="result-label">Tempo/mês</div>
+                  <div class="result-value" id="tempo-monthly">0h</div>
+                </div>
+                <div class="calculator-result">
+                  <div class="result-label">Tempo/ano</div>
+                  <div class="result-value" id="tempo-yearly">0h</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Erros Calculator -->
+          <div id="erros-tool" class="calculator" style="display: none;">
+            <h2>Calculadora de Erros</h2>
+            <p style="color: #64748b; margin-bottom: 2rem;">Estime o custo de erros operacionais</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+              <div>
+                <div class="calculator-group">
+                  <label>Erros/mês (estimado)</label>
+                  <input type="number" id="erros-count" placeholder="Ex: 50" value="50">
+                </div>
+                <div class="calculator-group">
+                  <label>Custo/erro (R$)</label>
+                  <input type="number" id="erros-cost" placeholder="Ex: 500" value="500">
+                </div>
+                <div class="calculator-group">
+                  <label>Redução esperada com automação (%)</label>
+                  <input type="number" id="erros-reduction" placeholder="Ex: 95" value="95" max="100">
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="calculateErros()">Calcular</button>
+              </div>
+              <div>
+                <div class="calculator-result">
+                  <div class="result-label">Custo mensal de erros</div>
+                  <div class="result-value" id="erros-monthly">R$ 0</div>
+                </div>
+                <div class="calculator-result">
+                  <div class="result-label">Economia mensal</div>
+                  <div class="result-value" id="erros-savings">R$ 0</div>
+                </div>
+                <div class="calculator-result">
+                  <div class="result-label">Economia anual</div>
+                  <div class="result-value" id="erros-yearly">R$ 0</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Escalabilidade Tool -->
+          <div id="escalabilidade-tool" class="calculator" style="display: none;">
+            <h2>Análise de Escalabilidade</h2>
+            <p style="color: #64748b; margin-bottom: 2rem;">Veja como sua empresa pode crescer com automação</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+              <div>
+                <div class="calculator-group">
+                  <label>Receita mensal atual (R$)</label>
+                  <input type="number" id="esca-revenue" placeholder="Ex: 100000" value="100000">
+                </div>
+                <div class="calculator-group">
+                  <label>% de tempo em operações</label>
+                  <input type="number" id="esca-ops" placeholder="Ex: 40" value="40" max="100">
+                </div>
+                <div class="calculator-group">
+                  <label>Crescimento esperado/ano (%)</label>
+                  <input type="number" id="esca-growth" placeholder="Ex: 30" value="30">
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="calculateEscalabilidade()">Calcular</button>
+              </div>
+              <div>
+                <div class="calculator-result">
+                  <div class="result-label">Tempo operacional liberado</div>
+                  <div class="result-value" id="esca-freed">0%</div>
+                </div>
+                <div class="calculator-result">
+                  <div class="result-label">Receita em 12 meses (sem automação)</div>
+                  <div class="result-value" id="esca-without">R$ 0</div>
+                </div>
+                <div class="calculator-result">
+                  <div class="result-label">Receita em 12 meses (com automação)</div>
+                  <div class="result-value" id="esca-with">R$ 0</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="section text-center">
+        <div class="container">
+          <h2>Quer implementar essas melhorias?</h2>
+          <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Nosso time está pronto para ajudar você a transformar esses números em realidade
+          </p>
+          <a href="/contato" class="btn btn-primary">Solicitar Demonstração</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>BigCorps Tecnologia</h3>
+            <p>Soluções em IA e Automação para empresas que querem crescer.</p>
+          </div>
+          <div class="footer-section">
+            <h3>Produtos</h3>
+            <ul>
+              <li><a href="/solucoes#automacao">Automação</a></li>
+              <li><a href="/solucoes#ia">Inteligência Artificial</a></li>
+              <li><a href="/solucoes#analytics">Analytics</a></li>
+              <li><a href="/solucoes#integracao">Integração</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Empresa</h3>
+            <ul>
+              <li><a href="/">Sobre Nós</a></li>
+              <li><a href="/">Blog</a></li>
+              <li><a href="/">Carreiras</a></li>
+              <li><a href="/contato">Contato</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Legal</h3>
+            <ul>
+              <li><a href="/">Política de Privacidade</a></li>
+              <li><a href="/">Termos de Serviço</a></li>
+              <li><a href="/">Política de Cookies</a></li>
+              <li><a href="/">LGPD</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 BigCorps Tecnologia. Todos os direitos reservados.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function switchTool(tool) {
+      document.querySelectorAll('.calculator').forEach(el => el.style.display = 'none');
+      document.getElementById(tool + '-tool').style.display = 'block';
+      document.querySelector('.calculator').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+    }
+
+    function calculateROI() {
+      const investment = parseFloat(document.getElementById('roi-investment').value) || 0;
+      const savings = parseFloat(document.getElementById('roi-savings').value) || 0;
+      const months = parseFloat(document.getElementById('roi-months').value) || 12;
+      
+      const totalSavings = savings * months;
+      const roi = ((totalSavings - investment) / investment) * 100;
+      const payback = investment / savings;
+      const profit = totalSavings - investment;
+      
+      document.getElementById('roi-result').textContent = roi.toFixed(1) + '%';
+      document.getElementById('roi-payback').textContent = payback.toFixed(1);
+      document.getElementById('roi-profit').textContent = formatCurrency(profit);
+    }
+
+    function calculateEconomia() {
+      const employees = parseFloat(document.getElementById('econ-employees').value) || 0;
+      const hours = parseFloat(document.getElementById('econ-hours').value) || 0;
+      const salary = parseFloat(document.getElementById('econ-salary').value) || 0;
+      
+      const monthlyEconomy = employees * hours * 22 * salary;
+      const annualEconomy = monthlyEconomy * 12;
+      const hoursFreed = employees * hours * 22;
+      
+      document.getElementById('econ-monthly').textContent = formatCurrency(monthlyEconomy);
+      document.getElementById('econ-annual').textContent = formatCurrency(annualEconomy);
+      document.getElementById('econ-hours-freed').textContent = hoursFreed.toFixed(0) + 'h';
+    }
+
+    function calculateProdutividade() {
+      const processes = parseFloat(document.getElementById('prod-processes').value) || 0;
+      const time = parseFloat(document.getElementById('prod-time').value) || 0;
+      const percentage = parseFloat(document.getElementById('prod-percentage').value) || 0;
+      
+      const hoursFreed = (processes * time * percentage) / 100;
+      const daysFreed = hoursFreed / 8;
+      const yearlyHours = hoursFreed * 12;
+      
+      document.getElementById('prod-hours').textContent = hoursFreed.toFixed(1) + 'h';
+      document.getElementById('prod-days').textContent = daysFreed.toFixed(1) + ' dias';
+      document.getElementById('prod-year').textContent = yearlyHours.toFixed(0) + 'h';
+    }
+
+    function calculateTempo() {
+      const tasks = parseFloat(document.getElementById('tempo-tasks').value) || 0;
+      const minutes = parseFloat(document.getElementById('tempo-minutes').value) || 0;
+      const days = parseFloat(document.getElementById('tempo-days').value) || 0;
+      
+      const dailyMinutes = tasks * minutes;
+      const dailyHours = dailyMinutes / 60;
+      const monthlyHours = dailyHours * days;
+      const yearlyHours = monthlyHours * 12;
+      
+      document.getElementById('tempo-daily').textContent = dailyHours.toFixed(1) + 'h';
+      document.getElementById('tempo-monthly').textContent = monthlyHours.toFixed(0) + 'h';
+      document.getElementById('tempo-yearly').textContent = yearlyHours.toFixed(0) + 'h';
+    }
+
+    function calculateErros() {
+      const count = parseFloat(document.getElementById('erros-count').value) || 0;
+      const cost = parseFloat(document.getElementById('erros-cost').value) || 0;
+      const reduction = parseFloat(document.getElementById('erros-reduction').value) || 0;
+      
+      const monthlyCost = count * cost;
+      const monthlySavings = (monthlyCost * reduction) / 100;
+      const yearlySavings = monthlySavings * 12;
+      
+      document.getElementById('erros-monthly').textContent = formatCurrency(monthlyCost);
+      document.getElementById('erros-savings').textContent = formatCurrency(monthlySavings);
+      document.getElementById('erros-yearly').textContent = formatCurrency(yearlySavings);
+    }
+
+    function calculateEscalabilidade() {
+      const revenue = parseFloat(document.getElementById('esca-revenue').value) || 0;
+      const ops = parseFloat(document.getElementById('esca-ops').value) || 0;
+      const growth = parseFloat(document.getElementById('esca-growth').value) || 0;
+      
+      const freed = ops * 0.8;
+      const revenueWithout = revenue * (1 + growth / 100);
+      const revenueWith = revenue * (1 + (growth + (freed / 100 * 30)) / 100);
+      
+      document.getElementById('esca-freed').textContent = freed.toFixed(1) + '%';
+      document.getElementById('esca-without').textContent = formatCurrency(revenueWithout);
+      document.getElementById('esca-with').textContent = formatCurrency(revenueWith);
+    }
+
+    // Show first tool on load
+    window.addEventListener('load', function() {
+      document.getElementById('roi-tool').style.display = 'block';
+    });
+  </script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
