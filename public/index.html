@@ -5,142 +5,578 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="BigCorps Tecnologia - Soluções em IA e Automação para empresas">
   <title>BigCorps Tecnologia - Soluções em IA e Automação</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #F26522;
+      --orange-dark: #D4541A;
+      --orange-light: #FFF1E9;
+      --white: #FFFFFF;
+      --gray-50: #F9FAFB;
+      --gray-100: #F3F4F6;
+      --gray-300: #D1D5DB;
+      --gray-500: #6B7280;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      --radius: 10px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.07);
+      --shadow-md: 0 4px 24px rgba(0,0,0,0.10);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--gray-900);
+      background: var(--white);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 { font-family: 'Sora', sans-serif; line-height: 1.2; }
+
+    a { text-decoration: none; color: inherit; }
+
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-100);
+      box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--gray-900);
+    }
+
+    .logo svg { color: var(--orange); }
+
+    nav ul {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    nav a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      transition: color .2s;
+    }
+
+    nav a:hover, nav a.active { color: var(--orange); }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray-700);
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.75rem;
+      border-radius: var(--radius);
+      font-family: 'Sora', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all .2s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: var(--white);
+      border: 2px solid var(--orange);
+    }
+
+    .btn-primary:hover {
+      background: var(--orange-dark);
+      border-color: var(--orange-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(242,101,34,0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.7);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: var(--white);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 60%, #3a1a00 100%);
+      padding: 6rem 0 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(242,101,34,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -60px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(242,101,34,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(242,101,34,0.15);
+      border: 1px solid rgba(242,101,34,0.35);
+      color: #FFAA77;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      color: var(--white);
+      margin-bottom: 1.25rem;
+      font-weight: 700;
+    }
+
+    .hero h1 span { color: var(--orange); }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.72);
+      margin-bottom: 2.25rem;
+      max-width: 560px;
+    }
+
+    .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    /* ── SECTION ── */
+    .section { padding: 5rem 0; }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .section-title h2 {
+      font-size: clamp(1.6rem, 3vw, 2.25rem);
+      color: var(--gray-900);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title p {
+      color: var(--gray-500);
+      font-size: 1rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ── FEATURES GRID ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--gray-100);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      transition: box-shadow .25s, transform .25s, border-color .25s;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+      border-color: var(--orange);
+    }
+
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--orange-light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      color: var(--orange);
+    }
+
+    .card-icon svg { width: 26px; height: 26px; }
+
+    .card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: var(--gray-900);
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--gray-500);
+      line-height: 1.65;
+    }
+
+    /* ── CTA ── */
+    .cta {
+      background: var(--orange-light);
+      border-top: 1px solid rgba(242,101,34,0.15);
+      border-bottom: 1px solid rgba(242,101,34,0.15);
+      padding: 5rem 0;
+      text-align: center;
+    }
+
+    .cta h2 {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      color: var(--gray-900);
+      margin-bottom: 1rem;
+    }
+
+    .cta p {
+      color: var(--gray-500);
+      font-size: 1rem;
+      max-width: 520px;
+      margin: 0 auto 2rem;
+    }
+
+    .btn-cta {
+      background: var(--orange);
+      color: var(--white);
+      border: 2px solid var(--orange);
+      padding: 0.85rem 2rem;
+    }
+
+    .btn-cta:hover {
+      background: var(--orange-dark);
+      border-color: var(--orange-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(242,101,34,0.3);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--gray-900);
+      color: rgba(255,255,255,0.6);
+      padding: 3.5rem 0 1.5rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 2.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .footer-section h3 {
+      font-family: 'Sora', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .footer-section p {
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+
+    .footer-section ul { list-style: none; }
+
+    .footer-section ul li { margin-bottom: 0.6rem; }
+
+    .footer-section ul a {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.55);
+      transition: color .2s;
+    }
+
+    .footer-section ul a:hover { color: var(--orange); }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--white);
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-logo svg { color: var(--orange); }
+
+    .footer-bottom {
+      padding-top: 1.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { display: none; }
+      .mobile-menu-btn { display: block; }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .hero-buttons { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
-  <div id="root" class="flex flex-col min-h-screen">
-    <!-- Header -->
-    <header>
-      <div class="container">
-        <div class="header-content">
-          <a href="/" class="logo">
-            <span>🚀</span>
-            <span>BigCorps</span>
-          </a>
-          <button class="mobile-menu-btn">☰</button>
-          <nav>
-            <ul>
-              <li><a href="/" class="active">Início</a></li>
-              <li><a href="/solucoes">Soluções</a></li>
-              <li><a href="/duvidas">Dúvidas</a></li>
-              <li><a href="/utilitarios">Utilitários</a></li>
-              <li><a href="/contato">Contato</a></li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="flex-1">
-      <!-- Hero Section -->
-      <section class="hero">
-        <div class="container">
-          <h1>Transforme Seu Negócio com IA e Automação</h1>
-          <p>Soluções inteligentes para aumentar produtividade, reduzir custos e impulsionar o crescimento da sua empresa</p>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+          BigCorps
+        </a>
+
+        <button class="mobile-menu-btn" aria-label="Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+
+        <nav>
+          <ul>
+            <li><a href="/" class="active">Início</a></li>
+            <li><a href="/solucoes">Soluções</a></li>
+            <li><a href="/duvidas">Dúvidas</a></li>
+            <li><a href="/utilitarios">Utilitários</a></li>
+            <li><a href="/contato">Contato</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-inner">
+          <div class="hero-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/></svg>
+            Tecnologia para negócios
+          </div>
+          <h1>Transforme Seu Negócio com <span>IA e Automação</span></h1>
+          <p>Soluções inteligentes para aumentar produtividade, reduzir custos e impulsionar o crescimento da sua empresa.</p>
           <div class="hero-buttons">
             <a href="/solucoes" class="btn btn-primary">Conheça Nossas Soluções</a>
             <a href="/contato" class="btn btn-outline">Fale Conosco</a>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- Features Section -->
-      <section class="section">
-        <div class="container">
-          <div class="section-title">
-            <h2>Por Que Escolher BigCorps?</h2>
-            <p>Oferecemos as melhores soluções em tecnologia e automação para o seu negócio</p>
-          </div>
-          <div class="features-grid">
-            <div class="card">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem;">🤖</div>
-              <h3 class="card-title">Inteligência Artificial Avançada</h3>
-              <p class="card-description">Utilize machine learning e deep learning para automatizar processos complexos e tomar decisões baseadas em dados.</p>
-            </div>
-            <div class="card">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚡</div>
-              <h3 class="card-title">Automação Inteligente</h3>
-              <p class="card-description">Reduza tempo manual em tarefas repetitivas e aumente a eficiência operacional em até 80%.</p>
-            </div>
-            <div class="card">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem;">📊</div>
-              <h3 class="card-title">Análise de Dados em Tempo Real</h3>
-              <p class="card-description">Obtenha insights valiosos com dashboards interativos e relatórios personalizados para sua empresa.</p>
-            </div>
-            <div class="card">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔒</div>
-              <h3 class="card-title">Segurança de Nível Empresarial</h3>
-              <p class="card-description">Proteção total de dados com criptografia de ponta, conformidade com LGPD e ISO 27001.</p>
-            </div>
-            <div class="card">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem;">🌐</div>
-              <h3 class="card-title">Integração Perfeita</h3>
-              <p class="card-description">Conecte com seus sistemas existentes sem interrupções. Suporte para APIs, webhooks e integrações customizadas.</p>
-            </div>
-            <div class="card">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem;">👥</div>
-              <h3 class="card-title">Suporte 24/7</h3>
-              <p class="card-description">Equipe dedicada de especialistas prontos para ajudar sua empresa em qualquer momento.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CTA Section -->
-      <section class="section" style="background: #f8fafc; padding: 4rem 0;">
-        <div class="container text-center">
-          <h2>Pronto para Transformar Seu Negócio?</h2>
-          <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-            Deixe nossos especialistas ajudarem você a encontrar a solução perfeita para seus desafios
-          </p>
-          <a href="/contato" class="btn btn-primary">Solicitar Demonstração</a>
-        </div>
-      </section>
-    </main>
-
-    <!-- Footer -->
-    <footer>
+    <!-- Features -->
+    <section class="section">
       <div class="container">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>BigCorps Tecnologia</h3>
-            <p>Soluções em IA e Automação para empresas que querem crescer.</p>
-          </div>
-          <div class="footer-section">
-            <h3>Produtos</h3>
-            <ul>
-              <li><a href="/solucoes#automacao">Automação</a></li>
-              <li><a href="/solucoes#ia">Inteligência Artificial</a></li>
-              <li><a href="/solucoes#analytics">Analytics</a></li>
-              <li><a href="/solucoes#integracao">Integração</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h3>Empresa</h3>
-            <ul>
-              <li><a href="/sobre">Sobre Nós</a></li>
-              <li><a href="/blog">Blog</a></li>
-              <li><a href="/carreiras">Carreiras</a></li>
-              <li><a href="/contato">Contato</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h3>Legal</h3>
-            <ul>
-              <li><a href="/privacidade">Política de Privacidade</a></li>
-              <li><a href="/termos">Termos de Serviço</a></li>
-              <li><a href="/cookies">Política de Cookies</a></li>
-              <li><a href="/lgpd">LGPD</a></li>
-            </ul>
-          </div>
+        <div class="section-title">
+          <h2>Por Que Escolher BigCorps?</h2>
+          <p>Oferecemos as melhores soluções em tecnologia e automação para o seu negócio</p>
         </div>
-        <div class="footer-bottom">
-          <p>&copy; 2024 BigCorps Tecnologia. Todos os direitos reservados.</p>
+        <div class="features-grid">
+
+          <div class="card">
+            <div class="card-icon">
+              <!-- CPU / AI chip -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="7" y="7" width="10" height="10" rx="1"/>
+                <path d="M9 4V2M12 4V2M15 4V2M9 22v-2M12 22v-2M15 22v-2M4 9H2M4 12H2M4 15H2M22 9h-2M22 12h-2M22 15h-2"/>
+              </svg>
+            </div>
+            <h3>Inteligência Artificial Avançada</h3>
+            <p>Utilize machine learning e deep learning para automatizar processos complexos e tomar decisões baseadas em dados.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">
+              <!-- Zap -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </div>
+            <h3>Automação Inteligente</h3>
+            <p>Reduza tempo manual em tarefas repetitivas e aumente a eficiência operacional em até 80%.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">
+              <!-- Bar chart -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+                <line x1="2" y1="20" x2="22" y2="20"/>
+              </svg>
+            </div>
+            <h3>Análise de Dados em Tempo Real</h3>
+            <p>Obtenha insights valiosos com dashboards interativos e relatórios personalizados para sua empresa.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">
+              <!-- Shield -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <h3>Segurança de Nível Empresarial</h3>
+            <p>Proteção total de dados com criptografia de ponta, conformidade com LGPD e ISO 27001.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">
+              <!-- Globe -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+            </div>
+            <h3>Integração Perfeita</h3>
+            <p>Conecte com seus sistemas existentes sem interrupções. Suporte para APIs, webhooks e integrações customizadas.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">
+              <!-- Headset / support -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+              </svg>
+            </div>
+            <h3>Suporte 24/7</h3>
+            <p>Equipe dedicada de especialistas prontos para ajudar sua empresa em qualquer momento.</p>
+          </div>
+
         </div>
       </div>
-    </footer>
-  </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <div class="container">
+        <h2>Pronto para Transformar Seu Negócio?</h2>
+        <p>Deixe nossos especialistas ajudarem você a encontrar a solução perfeita para seus desafios.</p>
+        <a href="/contato" class="btn btn-cta">Solicitar Demonstração</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-section">
+          <div class="footer-logo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            BigCorps
+          </div>
+          <p>Soluções em IA e Automação para empresas que querem crescer.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Produtos</h3>
+          <ul>
+            <li><a href="/solucoes#automacao">Automação</a></li>
+            <li><a href="/solucoes#ia">Inteligência Artificial</a></li>
+            <li><a href="/solucoes#analytics">Analytics</a></li>
+            <li><a href="/solucoes#integracao">Integração</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Empresa</h3>
+          <ul>
+            <li><a href="/sobre">Sobre Nós</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/carreiras">Carreiras</a></li>
+            <li><a href="/contato">Contato</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Legal</h3>
+          <ul>
+            <li><a href="/privacidade">Política de Privacidade</a></li>
+            <li><a href="/termos">Termos de Serviço</a></li>
+            <li><a href="/cookies">Política de Cookies</a></li>
+            <li><a href="/lgpd">LGPD</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 BigCorps Tecnologia. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
 
   <script src="/js/main.js"></script>
 </body>
