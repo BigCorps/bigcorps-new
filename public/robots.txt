@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://bigcorps.com.br/sitemap.xml
