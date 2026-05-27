@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <link rel="icon" href="/favicon.ico">
+<link rel="icon" href="/favicon.ico">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ID Key - BigCorps Tecnologia</title>
@@ -54,58 +54,21 @@
         </div>
       </div>
     </header>
-
     <div class="iframe-bar">
       <div class="iframe-url">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         Passo a passo para obter o Token:
       </div>
-
-      <!-- Botão agora chama toggleIframe() em vez de abrir nova aba -->
-      <button id="toggle-btn" onclick="toggleIframe()" class="btn btn-primary" style="padding:0.45rem 1rem;font-size:0.8rem;cursor:pointer;display:flex;align-items:center;gap:0.4rem;">
-        <svg id="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-        <span id="btn-text">Passo a passo</span>
-      </button>
+      <a href="https://sites.google.com/view/token-bigcorps" target="_blank" rel="noopener" class="btn btn-primary" style="padding:0.45rem 1rem;font-size:0.8rem;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Abrir em nova aba
+      </a>
     </div>
 
     <div class="iframe-wrap">
-      <iframe id="main-frame" src="https://inter.btsolucao.com.br" title="ID Key" allowfullscreen></iframe>
+      <iframe src="https://inter.btsolucao.com.br" title="ID Key" allowfullscreen></iframe>
     </div>
   </div>
-
-  <script>
-    const IDKEY_URL   = 'https://inter.btsolucao.com.br';
-    const TUTORIAL_URL = 'https://sites.google.com/view/token-bigcorps';
-
-    const frame   = document.getElementById('main-frame');
-    const btn     = document.getElementById('toggle-btn');
-    const btnText = document.getElementById('btn-text');
-    const btnIcon = document.getElementById('btn-icon');
-
-    // Ícone de "voltar" (seta circular)
-    const iconBack = `<path d="M19 12A7 7 0 1 1 12 5V2l4 4-4 4V7a5 5 0 1 0 5 5z"/>`;
-    // Ícone de "passo a passo" (relógio)
-    const iconSteps = `<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>`;
-
-    let showingTutorial = false;
-
-    function toggleIframe() {
-      if (!showingTutorial) {
-        // Abre o tutorial no iframe
-        frame.src = TUTORIAL_URL;
-        btnText.textContent = 'Alterar para o ID Key';
-        btnIcon.innerHTML = iconBack;
-        showingTutorial = true;
-      } else {
-        // Volta para o ID Key
-        frame.src = IDKEY_URL;
-        btnText.textContent = 'Passo a passo';
-        btnIcon.innerHTML = iconSteps;
-        showingTutorial = false;
-      }
-    }
-  </script>
-
   <script src="/js/main.js"></script>
 </body>
 </html>
