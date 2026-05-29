@@ -4,71 +4,130 @@
 <link rel="icon" href="/favicon.ico">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ID Key - BigCorps Tecnologia</title>
+  <meta name="description" content="Utilitários gratuitos da BigCorps Tecnologia">
+  <title>Utilitários - BigCorps Tecnologia</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
-  <style>
-    html, body { height: 100%; overflow: hidden; }
-    .iframe-page { height: 100vh; display: flex; flex-direction: column; }
-    .iframe-bar {
-      background: var(--white);
-      border-bottom: 1px solid var(--gray-100);
-      padding: 0.6rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-shrink: 0;
-    }
-    .iframe-url {
-      font-size: 0.78rem;
-      color: var(--gray-500);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .iframe-url svg { color: var(--orange); }
-    .iframe-wrap { flex: 1; overflow: hidden; }
-    .iframe-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
-  </style>
 </head>
 <body>
-  <div class="iframe-page">
-    <header>
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo"><img src="/logo.png" alt="BigCorps" height="24"></a>
+        <button class="mobile-menu-btn" aria-label="Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <nav>
+          <ul>
+            <li><a href="/">Início</a></li>
+            <li><a href="/solucoes/">Soluções</a></li>
+            <li><a href="/duvidas/">Dúvidas</a></li>
+            <li><a href="/utilitarios/" class="active">Utilitários</a></li>
+            <li><a href="/contato/">Contato</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero-simple">
       <div class="container">
-        <div class="header-inner">
-          <a href="/" class="logo"><img src="/logo.png" alt="BigCorps" height="24"></a>
-          <button class="mobile-menu-btn" aria-label="Menu">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          </button>
-          <nav>
-            <ul>
-              <li><a href="/">Início</a></li>
-              <li><a href="/solucoes/">Soluções</a></li>
-              <li><a href="/duvidas/">Dúvidas</a></li>
-              <li><a href="/utilitarios/idkey.html" class="active">Utilitários</a></li>
-              <li><a href="/contato/">Contato</a></li>
+        <h1>Utilitários</h1>
+        <p>Ferramentas gratuitas para facilitar o dia a dia do seu negócio</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-title">
+          <h2>Ferramentas Disponíveis</h2>
+          <p>Recursos desenvolvidos pela BigCorps para uso rápido e sem cadastro</p>
+        </div>
+        <div class="grid-2" style="grid-template-columns: repeat(2, 1fr);">
+
+          <div class="card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <h3>Duplicador de Fotos</h3>
+            <p style="margin-bottom:0.75rem;">Prepare imagens para impressão em A4 com espaçamento e bordas para corte. Gere fotos 3x4, 2x2 ou 5x7 para documentos em segundos.</p>
+            <ul class="check-list" style="margin-bottom:1.25rem;">
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Duplicação de imagens para impressão A4</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Gerador de fotos 3x4, 2x2 e 5x7</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Bordas de corte automáticas</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Suporte a JPG, PNG, SVG e WebP</li>
             </ul>
-          </nav>
+            <a href="/utilitarios/foto" class="btn btn-primary">Acessar Ferramenta</a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h3>Gerador de Token Inter</h3>
+            <p style="margin-bottom:0.75rem;">Cadastre suas credenciais da API do Banco Inter e gere tokens de autenticação para integração com sistemas de pagamento e automações.</p>
+            <ul class="check-list" style="margin-bottom:1.25rem;">
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Cadastro de Client ID e Client Secret</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Upload de certificados .crt e .key</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Geração e atualização de tokens OAuth</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Integração com Pix e conta corrente</li>
+            </ul>
+            <a href="/utilitarios/key" class="btn btn-primary">Acessar Ferramenta</a>
+          </div>
+
         </div>
       </div>
-    </header>
-    <div class="iframe-bar">
-      <div class="iframe-url">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        Passo a passo para obter o Token:
-      </div>
-      <a href="https://sites.google.com/view/token-bigcorps" target="_blank" rel="noopener" class="btn btn-primary" style="padding:0.45rem 1rem;font-size:0.8rem;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        Abrir em nova aba
-      </a>
-    </div>
+    </section>
 
-    <div class="iframe-wrap">
-      <iframe src="https://inter.btsolucao.com.br" title="ID Key" allowfullscreen></iframe>
+    <section class="cta-banner">
+      <div class="container">
+        <h2>Precisa de algo mais?</h2>
+        <p>Desenvolvemos soluções personalizadas para o seu negócio. Fale com nossos especialistas.</p>
+        <a href="/contato/" class="btn btn-primary">Falar com Especialista</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-section">
+          <div class="footer-logo"><img src="/logo.png" alt="BigCorps" height="24"></div>
+          <p>Soluções em IA e Automação para empresas que querem crescer.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Soluções</h3>
+          <ul>
+            <li><a href="/solucoes/minhai.html">minhAi App</a></li>
+            <li><a href="/solucoes/vixus.html">Vixus App</a></li>
+            <li><a href="/solucoes/pagamentos.html">Pagamentos</a></li>
+            <li><a href="/solucoes/aplicativos.html">Aplicativos</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Empresa</h3>
+          <ul>
+            <li><a href="/duvidas/">Dúvidas</a></li>
+            <li><a href="/utilitarios/">Utilitários</a></li>
+            <li><a href="/contato/">Contato</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Legal</h3>
+          <ul>
+            <li><a href="#">Política de Privacidade</a></li>
+            <li><a href="#">Termos de Serviço</a></li>
+            <li><a href="#">LGPD</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 BigCorps Tecnologia. Todos os direitos reservados.</p>
+      </div>
     </div>
-  </div>
+  </footer>
   <script src="/js/main.js"></script>
 </body>
 </html>
