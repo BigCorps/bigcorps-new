@@ -85,6 +85,10 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="1"/><rect x="7" y="6" width="10" height="9"/></svg>
           Polaroid
         </button>
+        <button data-tool="conversor" onclick="switchTool('conversor')" class="tool-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8h12l-3-3M20 16H8l3 3"/></svg>
+          Conversor
+        </button>
       </div>
     </div>
 
@@ -97,7 +101,8 @@
     const TOOLS = {
       duplicador: { url: 'https://home.bigcorps.com.br/duplicador.html', label: 'Duplicador de Imagens' },
       fotos:      { url: 'https://home.bigcorps.com.br/fotos.html',      label: 'Fotos 3x4' },
-      polaroid:   { url: 'https://home.bigcorps.com.br/polaroid.html',   label: 'Polaroid' }
+      polaroid:   { url: 'https://home.bigcorps.com.br/polaroid.html',   label: 'Polaroid' },
+      conversor:  { url: 'https://home.bigcorps.com.br/conversor.html',  label: 'Conversor de Arquivos' }
     };
 
     const frame    = document.getElementById('main-frame');
