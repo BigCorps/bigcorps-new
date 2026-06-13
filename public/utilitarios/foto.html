@@ -32,6 +32,16 @@
     .iframe-url svg { color: var(--orange); }
     .iframe-wrap { flex: 1; overflow: hidden; }
     .iframe-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+
+    .iframe-tools { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .tool-btn {
+      padding: 0.45rem 0.9rem; font-size: 0.8rem; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      border-radius: 8px; border: 1px solid var(--gray-100);
+      background: var(--white); color: var(--gray-500); transition: all 0.2s;
+    }
+    .tool-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .tool-btn.active { background: var(--orange); border-color: var(--orange); color: #fff; }
   </style>
 </head>
 <body>
@@ -59,14 +69,23 @@
     <div class="iframe-bar">
       <div class="iframe-url">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        Duplicador de Imagens:
+        <span id="bar-label">Duplicador de Imagens</span>
       </div>
 
-      <!-- Botão agora chama toggleIframe() em vez de abrir nova aba -->
-      <button id="toggle-btn" onclick="toggleIframe()" class="btn btn-primary" style="padding:0.45rem 1rem;font-size:0.8rem;cursor:pointer;display:flex;align-items:center;gap:0.4rem;">
-        <svg id="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-        <span id="btn-text">Fotos 3x4</span>
-      </button>
+      <div class="iframe-tools">
+        <button data-tool="duplicador" onclick="switchTool('duplicador')" class="tool-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="11" height="11" rx="1"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>
+          Duplicador
+        </button>
+        <button data-tool="fotos" onclick="switchTool('fotos')" class="tool-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 8h3M15 12h3M7 16h10"/></svg>
+          Fotos 3x4
+        </button>
+        <button data-tool="polaroid" onclick="switchTool('polaroid')" class="tool-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="1"/><rect x="7" y="6" width="10" height="9"/></svg>
+          Polaroid
+        </button>
+      </div>
     </div>
 
     <div class="iframe-wrap">
@@ -75,36 +94,27 @@
   </div>
 
   <script>
-    const IDKEY_URL   = 'https://home.bigcorps.com.br/duplicador.html';
-    const TUTORIAL_URL = 'https://home.bigcorps.com.br/fotos.html';
+    const TOOLS = {
+      duplicador: { url: 'https://home.bigcorps.com.br/duplicador.html', label: 'Duplicador de Imagens' },
+      fotos:      { url: 'https://home.bigcorps.com.br/fotos.html',      label: 'Fotos 3x4' },
+      polaroid:   { url: 'https://home.bigcorps.com.br/polaroid.html',   label: 'Polaroid' }
+    };
 
-    const frame   = document.getElementById('main-frame');
-    const btn     = document.getElementById('toggle-btn');
-    const btnText = document.getElementById('btn-text');
-    const btnIcon = document.getElementById('btn-icon');
+    const frame    = document.getElementById('main-frame');
+    const barLabel = document.getElementById('bar-label');
 
-    // Ícone de "voltar" (seta circular)
-    const iconBack = `<path d="M19 12A7 7 0 1 1 12 5V2l4 4-4 4V7a5 5 0 1 0 5 5z"/>`;
-    // Ícone de "passo a passo" (relógio)
-    const iconSteps = `<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>`;
-
-    let showingTutorial = false;
-
-    function toggleIframe() {
-      if (!showingTutorial) {
-        // Abre o tutorial no iframe
-        frame.src = TUTORIAL_URL;
-        btnText.textContent = 'Fotos 3x4';
-        btnIcon.innerHTML = iconBack;
-        showingTutorial = true;
-      } else {
-        // Volta para o ID Key
-        frame.src = IDKEY_URL;
-        btnText.textContent = 'Duplicador de Imagens';
-        btnIcon.innerHTML = iconSteps;
-        showingTutorial = false;
-      }
+    function switchTool(key) {
+      const tool = TOOLS[key];
+      if (!tool) return;
+      frame.src = tool.url;
+      barLabel.textContent = tool.label;
+      document.querySelectorAll('.tool-btn').forEach(b =>
+        b.classList.toggle('active', b.dataset.tool === key)
+      );
     }
+
+    // estado inicial
+    switchTool('duplicador');
   </script>
 
   <script src="/js/main.js"></script>
