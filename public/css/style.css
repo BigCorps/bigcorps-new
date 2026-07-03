@@ -157,9 +157,13 @@ nav a:hover, nav a.active { color: var(--orange); }
 
 .hero-inner { position: relative; z-index: 1; max-width: 680px; }
 
+.hero .container {
+  position: relative;
+}
+
 .hero-video {
   position: absolute;
-  right: 4%;
+  right: 0;
   bottom: 4rem;
   height: 55%;
   max-height: 260px;
