@@ -157,16 +157,12 @@ nav a:hover, nav a.active { color: var(--orange); }
 
 .hero-inner { position: relative; z-index: 1; max-width: 680px; }
 
-.hero .container {
-  position: relative;
-}
-
 .hero-video {
   position: absolute;
-  right: 0;
-  bottom: 3rem;
+  top: 0;
+  bottom: 0;
+  right: max(1.5rem, calc((100% - 1160px) / 2 + 1.5rem));
   height: 100%;
-  max-height: 320px;
   width: auto;
   z-index: 1;
   pointer-events: none;
