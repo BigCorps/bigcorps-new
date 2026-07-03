@@ -139,7 +139,7 @@ nav a:hover, nav a.active { color: var(--orange); }
 
 /* ── HERO ── */
 .hero {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 60%, #3a1a00 100%);
+  background: #000000;
   padding: 5rem 0 4rem;
   position: relative;
   overflow: hidden;
@@ -156,6 +156,19 @@ nav a:hover, nav a.active { color: var(--orange); }
 }
 
 .hero-inner { position: relative; z-index: 1; max-width: 680px; }
+
+.hero-video {
+  position: absolute;
+  top: 50%;
+  right: 2rem;
+  transform: translateY(-50%);
+  height: 80%;
+  max-height: 340px;
+  width: auto;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
 
 .hero-badge {
   display: inline-flex;
