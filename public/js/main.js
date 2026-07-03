@@ -1,7 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
+  // Atualiza o ano do rodapé
+  const anoEl = document.getElementById('ano-atual');
+  if (anoEl) anoEl.textContent = new Date().getFullYear();
+
   // Mobile menu toggle
-  const btn =
-document.getElementById('ano-atual').textContent = new Date().getFullYear(); document.querySelector('.mobile-menu-btn');
+  const btn = document.querySelector('.mobile-menu-btn');
   const nav = document.querySelector('nav');
   if (btn && nav) {
     btn.addEventListener('click', () => nav.classList.toggle('open'));
