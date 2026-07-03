@@ -164,9 +164,9 @@ nav a:hover, nav a.active { color: var(--orange); }
 .hero-video {
   position: absolute;
   right: 0;
-  bottom: 4rem;
-  height: 55%;
-  max-height: 260px;
+  bottom: 3rem;
+  height: 75%;
+  max-height: 320px;
   width: auto;
   z-index: 1;
   pointer-events: none;
