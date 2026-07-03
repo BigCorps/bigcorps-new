@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   // Mobile menu toggle
-  const btn = document.querySelector('.mobile-menu-btn');
+  const btn =
+document.getElementById('ano-atual').textContent = new Date().getFullYear(); document.querySelector('.mobile-menu-btn');
   const nav = document.querySelector('nav');
   if (btn && nav) {
     btn.addEventListener('click', () => nav.classList.toggle('open'));
