@@ -609,6 +609,22 @@ footer {
 }
 
 
+/* ══════════════════════════════════════════════════
+   CORREÇÃO: .card ul li::before pinta um ponto em
+   qualquer lista dentro de .card, inclusive na
+   .check-list — que já tem o próprio ícone de check.
+   ══════════════════════════════════════════════════ */
+
+.card .check-list li::before {
+  content: none;
+}
+
+.card .check-list li {
+  padding-left: 0;
+}
+
+
+
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
   .footer-grid { grid-template-columns: 1fr 1fr; }
