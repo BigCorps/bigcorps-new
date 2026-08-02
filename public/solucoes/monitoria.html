@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<link rel="icon" href="/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MonitorIA.cam - BigCorps Tecnologia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    html, body { height: 100%; overflow: hidden; }
+    .iframe-page { height: 100vh; display: flex; flex-direction: column; }
+    .iframe-bar {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-100);
+      padding: 0.6rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+    .iframe-url {
+      font-size: 0.78rem;
+      color: var(--gray-500);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .iframe-url svg { color: var(--orange); }
+    .iframe-wrap { flex: 1; overflow: hidden; }
+    .iframe-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+    header, footer { flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="iframe-page">
+    <header>
+      <div class="container">
+        <div class="header-inner">
+          <a href="/" class="logo"><img src="/logo.png" alt="BigCorps" height="24"></a>
+          <button class="mobile-menu-btn" aria-label="Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <nav>
+            <ul>
+              <li><a href="/">Início</a></li>
+              <li><a href="/solucoes/" class="active">Soluções</a></li>
+              <li><a href="/duvidas/">Dúvidas</a></li>
+              <li><a href="/utilitarios/idkey.html">Utilitários</a></li>
+              <li><a href="/contato/">Contato</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <div class="iframe-bar">
+      <div class="iframe-url">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        monitoria.cam
+      </div>
+      <a href="https://monitoria.cam" target="_blank" rel="noopener" class="btn btn-primary" style="padding:0.45rem 1rem;font-size:0.8rem;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Abrir em nova aba
+      </a>
+    </div>
+
+    <div class="iframe-wrap">
+      <iframe src="https://monitoria.cam" title="MonitorIA.cam" allowfullscreen></iframe>
+    </div>
+  </div>
+  <script src="/js/main.js"></script>
+</body>
+</html>
