@@ -536,6 +536,79 @@ footer {
   vertical-align: middle;
 }
 
+/* ══════════════════════════════════════════════════
+   CARD DE PRODUTO — anexar ao FINAL do /css/style.css
+   (precisa vir depois de .badge para .badge-soon vencer)
+   ══════════════════════════════════════════════════ */
+
+.card-produto {
+  display: flex;
+  flex-direction: column;
+}
+
+/* empurra o botão para a base — cards de alturas diferentes
+   ficam com os botões alinhados na mesma linha */
+.card-produto .btn {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.produto-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+/* altura fixa + width auto: logos horizontais e quadrados
+   ficam com peso visual equivalente e não geram CLS */
+.card-logo {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.card-logo img {
+  max-height: 52px;
+  max-width: 190px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* usar só se o logo for claro/branco e sumir no card branco:
+   <div class="card-logo card-logo--escuro"> */
+.card-logo--escuro {
+  background: var(--gray-900);
+  border-radius: 12px;
+  padding: 0.4rem 0.8rem;
+  height: auto;
+}
+.card-logo--escuro img { max-height: 44px; }
+
+.produto-dominio {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--gray-500);
+  margin-bottom: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+/* variante neutra do .badge para produtos não lançados */
+.badge-soon {
+  background: var(--gray-200);
+  color: var(--gray-700);
+}
+
+@media (max-width: 480px) {
+  .produto-topo { flex-wrap: wrap; }
+  .card-logo img { max-width: 150px; }
+}
+
+
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
   .footer-grid { grid-template-columns: 1fr 1fr; }
