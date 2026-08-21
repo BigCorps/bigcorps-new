@@ -597,6 +597,29 @@ footer {
   letter-spacing: 0.02em;
 }
 
+/* ── Título do card de produto ──────────────────────────────────
+   Nome do app sozinho na primeira linha, slogan abaixo em laranja.
+   Antes, nome e slogan dividiam o mesmo <h3> e quebravam em pontos
+   diferentes conforme o comprimento: a leitura em varredura da
+   grade ficava irregular. */
+
+.card-produto h3.produto-nome {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 0.15rem;
+}
+
+.card-produto .produto-slogan {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--orange);
+  line-height: 1.35;
+  margin-bottom: 0.75rem;
+  /* o .card p genérico é cinza 0.875rem: estas três linhas acima
+     precisam vir depois dele na cascata para vencer */
+}
+
 /* variante neutra do .badge para produtos não lançados */
 .badge-soon {
   background: var(--gray-200);
