@@ -597,6 +597,33 @@ footer {
   letter-spacing: 0.02em;
 }
 
+/* ── Grade da vitrine de soluções ───────────────────────────────
+   São 13 cards: 3 + 3 + 3 nas primeiras linhas e 2 + 2 nas duas
+   últimas. Com número ímpar, deixar a última linha com um card
+   sozinho e esticado fica pior do que fechar em pares.
+
+   O truque: 6 colunas virtuais. Card normal ocupa 2 (dá 3 por
+   linha), os 4 últimos ocupam 3 (dá 2 por linha). Assim não é
+   preciso marcar card por card no HTML — se um produto entrar ou
+   sair, o :nth-last-child se ajusta sozinho.
+
+   Só no desktop. Abaixo de 1024px vale o auto-fit do .grid-2, que
+   já cai para 2 e depois 1 coluna. */
+
+@media (min-width: 1024px) {
+  .grid-produtos {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .grid-produtos > .card {
+    grid-column: span 2;
+  }
+
+  .grid-produtos > .card:nth-last-child(-n + 4) {
+    grid-column: span 3;
+  }
+}
+
 /* ── Título do card de produto ──────────────────────────────────
    Nome do app sozinho na primeira linha, slogan abaixo em laranja.
    Antes, nome e slogan dividiam o mesmo <h3> e quebravam em pontos
