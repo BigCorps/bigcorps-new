@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07110d" />
+  <meta name="description" content="Proposta técnica da BigCorps para construção do MatchPlay — aplicativo Android e plataforma web para conectar atletas, organizar partidas e fortalecer comunidades esportivas." />
+  <title>MatchPlay — Proposta Técnica | BigCorps</title>
+  <style>
+    :root{
+      --bg:#06100c;
+      --bg-2:#0a1711;
+      --surface:#0d1d16;
+      --surface-2:#10251b;
+      --card:#0d1a14;
+      --line:rgba(255,255,255,.10);
+      --line-strong:rgba(106,255,160,.25);
+      --text:#f4fff7;
+      --muted:#9db3a5;
+      --green:#58f58c;
+      --green-2:#22c861;
+      --green-dark:#0c7d38;
+      --white:#ffffff;
+      --shadow:0 30px 80px rgba(0,0,0,.35);
+      --radius:26px;
+      --radius-sm:18px;
+      --max:1180px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 12% -10%, rgba(88,245,140,.13), transparent 30%),
+        radial-gradient(circle at 95% 15%, rgba(34,200,97,.10), transparent 28%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.55;
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    button,a{ -webkit-tap-highlight-color:transparent }
+
+    .container{width:min(var(--max),calc(100% - 40px));margin:0 auto}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:9px;
+      font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+      color:var(--green);
+    }
+    .eyebrow::before{content:"";width:26px;height:2px;background:var(--green);border-radius:99px}
+    .section{padding:104px 0;position:relative}
+    .section.alt{background:rgba(255,255,255,.018);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .section-head{max-width:760px;margin-bottom:48px}
+    h1,h2,h3,p{margin-top:0}
+    h1{
+      font-size:clamp(48px,7.2vw,92px);
+      line-height:.93;
+      letter-spacing:-.055em;
+      margin-bottom:28px;
+    }
+    h2{
+      font-size:clamp(34px,4.5vw,58px);
+      line-height:1.02;
+      letter-spacing:-.04em;
+      margin:12px 0 18px;
+    }
+    h3{font-size:21px;line-height:1.15;letter-spacing:-.02em;margin-bottom:10px}
+    .lead{font-size:clamp(18px,2vw,22px);color:#c4d4c9;max-width:780px}
+    .muted{color:var(--muted)}
+    .accent{color:var(--green)}
+
+    /* NAV */
+    .nav-wrap{
+      position:sticky;top:0;z-index:50;
+      backdrop-filter:blur(18px);
+      background:rgba(6,16,12,.76);
+      border-bottom:1px solid rgba(255,255,255,.07);
+    }
+    nav{height:74px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:-.03em}
+    .brand-mark{
+      width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+      background:linear-gradient(145deg,var(--green),#b2ffc9);
+      color:#06100c;font-weight:1000;box-shadow:0 0 30px rgba(88,245,140,.20);
+    }
+    .brand span small{display:block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-top:-2px}
+    .nav-links{display:flex;align-items:center;gap:26px;color:#bfd0c5;font-size:14px;font-weight:650}
+    .nav-links a:hover{color:var(--white)}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:9px;
+      padding:14px 19px;border-radius:14px;font-weight:800;font-size:14px;
+      transition:.2s ease;border:1px solid transparent;
+    }
+    .btn.primary{background:var(--green);color:#06100c;box-shadow:0 10px 35px rgba(88,245,140,.14)}
+    .btn.primary:hover{transform:translateY(-2px);background:#78ffa3}
+    .btn.ghost{border-color:var(--line);background:rgba(255,255,255,.025);color:var(--white)}
+    .btn.ghost:hover{border-color:rgba(88,245,140,.32);background:rgba(88,245,140,.06)}
+
+    /* HERO */
+    .hero{padding:86px 0 84px;position:relative;overflow:hidden}
+    .hero::after{
+      content:"";position:absolute;width:620px;height:620px;border:1px solid rgba(88,245,140,.08);border-radius:50%;right:-260px;top:-160px;
+      box-shadow:0 0 0 70px rgba(88,245,140,.02),0 0 0 140px rgba(88,245,140,.012);pointer-events:none;
+    }
+    .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:70px;align-items:center}
+    .hero-kicker{
+      display:inline-flex;gap:10px;align-items:center;border:1px solid var(--line-strong);background:rgba(88,245,140,.055);
+      color:#cffff0;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:750;margin-bottom:24px;
+    }
+    .pulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 6px rgba(88,245,140,.10)}
+    .hero-copy{color:#b5c8bc;font-size:18px;max-width:720px;margin-bottom:30px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:38px}
+    .hero-meta{display:flex;gap:28px;flex-wrap:wrap}
+    .meta-item strong{display:block;color:var(--white);font-size:14px}.meta-item span{font-size:12px;color:var(--muted)}
+
+    .phone-stage{position:relative;min-height:600px;display:grid;place-items:center}
+    .phone-glow{position:absolute;width:430px;height:430px;border-radius:50%;background:radial-gradient(circle,rgba(88,245,140,.18),transparent 65%);filter:blur(2px)}
+    .phone{
+      position:relative;width:310px;height:610px;border-radius:45px;padding:11px;background:#020604;border:1px solid rgba(255,255,255,.16);box-shadow:var(--shadow),0 0 0 8px rgba(255,255,255,.025);transform:rotate(3deg);
+    }
+    .phone-screen{height:100%;border-radius:35px;overflow:hidden;background:linear-gradient(180deg,#0d1d16,#07110d);border:1px solid rgba(255,255,255,.08);position:relative}
+    .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:92px;height:23px;background:#020604;border-radius:99px;z-index:4}
+    .app-top{padding:52px 18px 14px;display:flex;align-items:center;justify-content:space-between}
+    .app-logo{font-weight:1000;font-size:20px;letter-spacing:-.05em}.app-logo b{color:var(--green)}
+    .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(145deg,#d8ffe3,#59f58c);border:2px solid rgba(255,255,255,.85)}
+    .app-greeting{padding:0 18px 14px}.app-greeting small{color:#86a391}.app-greeting h4{font-size:22px;margin:2px 0 0;letter-spacing:-.03em}
+    .chips{display:flex;gap:7px;padding:0 18px 17px;overflow:hidden}.chip{white-space:nowrap;font-size:10px;padding:7px 10px;border-radius:99px;border:1px solid var(--line);color:#9eb4a6}.chip.active{background:var(--green);color:#06100c;border-color:var(--green);font-weight:850}
+    .match-card{margin:0 14px 12px;background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border:1px solid rgba(255,255,255,.09);border-radius:19px;padding:14px}
+    .sport-row{display:flex;justify-content:space-between;align-items:flex-start}.sport-icon{width:40px;height:40px;border-radius:13px;background:rgba(88,245,140,.12);display:grid;place-items:center;font-size:19px}.distance{font-size:10px;color:var(--green);font-weight:800}
+    .match-card h5{font-size:15px;margin:10px 0 4px}.match-card p{font-size:10px;color:#90a697;margin:0}.match-info{display:flex;gap:10px;margin-top:11px;font-size:9px;color:#b7c8bd}.join{margin-top:12px;height:34px;border-radius:10px;background:var(--green);color:#06100c;font-weight:900;font-size:10px;display:grid;place-items:center}
+    .float-card{position:absolute;background:rgba(13,29,22,.90);border:1px solid var(--line-strong);backdrop-filter:blur(15px);border-radius:17px;padding:13px 15px;box-shadow:0 18px 45px rgba(0,0,0,.28);font-size:12px}
+    .float-card.one{left:0;top:95px}.float-card.two{right:-10px;bottom:105px}.float-card strong{display:block;font-size:13px}.float-card span{color:var(--muted);font-size:10px}
+
+    /* STATS / STRIP */
+    .proof-strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.018)}
+    .proof-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+    .proof{padding:28px 24px;border-right:1px solid var(--line)}.proof:last-child{border-right:0}
+    .proof strong{display:block;font-size:21px;letter-spacing:-.03em}.proof span{font-size:12px;color:var(--muted)}
+
+    /* CARDS */
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .card{background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018));border:1px solid var(--line);border-radius:var(--radius-sm);padding:25px;position:relative;overflow:hidden}
+    .card:hover{border-color:rgba(88,245,140,.24)}
+    .card-num{font-size:11px;font-weight:900;letter-spacing:.12em;color:var(--green);margin-bottom:22px}
+    .icon{
+      width:45px;height:45px;border-radius:14px;display:grid;place-items:center;background:rgba(88,245,140,.08);border:1px solid rgba(88,245,140,.16);font-size:21px;margin-bottom:20px;
+    }
+    .card p{color:var(--muted);font-size:14px;margin-bottom:0}
+
+    /* PROBLEM / SOLUTION */
+    .problem-wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:60px;align-items:start}
+    .quote-block{padding:34px;border-left:3px solid var(--green);background:linear-gradient(90deg,rgba(88,245,140,.07),transparent);border-radius:0 22px 22px 0}
+    .quote-block p{font-size:26px;line-height:1.25;letter-spacing:-.03em;margin:0}.quote-block small{display:block;color:var(--muted);margin-top:16px}
+    .feature-list{display:grid;gap:14px}
+    .feature-row{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:16px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.018)}
+    .check{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(88,245,140,.11);color:var(--green);font-weight:900}.feature-row strong{display:block;font-size:14px}.feature-row span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+
+    /* FLOW */
+    .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;counter-reset:steps}
+    .step{counter-increment:steps;position:relative;padding:28px 22px 26px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.02)}
+    .step::before{content:"0" counter(steps);display:block;color:var(--green);font-size:11px;font-weight:900;letter-spacing:.15em;margin-bottom:38px}
+    .step:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:50%;transform:translateY(-50%);z-index:2;width:26px;height:26px;border-radius:50%;background:#10251b;border:1px solid var(--line);display:grid;place-items:center;color:var(--green);font-size:12px}
+    .step p{font-size:13px;color:var(--muted);margin:0}
+
+    /* ARCHITECTURE */
+    .architecture{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:stretch}
+    .arch-stack{padding:28px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(150deg,rgba(88,245,140,.05),rgba(255,255,255,.018))}
+    .tech{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}.tech:last-child{border-bottom:0}.tech b{font-size:14px}.tech span{font-size:12px;color:var(--muted);text-align:right}
+    .arch-visual{display:grid;align-content:center;gap:12px;padding:26px}
+    .node{border:1px solid var(--line);border-radius:16px;padding:15px 18px;text-align:center;background:rgba(255,255,255,.025);font-size:13px;font-weight:800}.node.core{background:rgba(88,245,140,.10);border-color:rgba(88,245,140,.28);color:#d9ffe5;padding:22px}.connector{text-align:center;color:var(--green);height:17px;line-height:17px}.node-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.node small{display:block;color:var(--muted);font-size:9px;font-weight:600;margin-top:3px}
+
+    /* CASES */
+    .case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .case{min-height:260px;display:flex;flex-direction:column;justify-content:space-between;padding:25px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,rgba(255,255,255,.04),rgba(255,255,255,.015));transition:.2s ease}
+    .case:hover{transform:translateY(-3px);border-color:rgba(88,245,140,.28)}
+    .case-tag{font-size:10px;font-weight:850;letter-spacing:.12em;color:var(--green);text-transform:uppercase}.case h3{font-size:25px;margin:12px 0 8px}.case p{color:var(--muted);font-size:13px}.case-link{font-size:12px;font-weight:850;color:#d8ffe4;display:flex;align-items:center;gap:7px}.case-link::after{content:"↗";color:var(--green)}
+
+    /* WHY */
+    .why-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:24px}
+    .big-card{padding:38px;border:1px solid var(--line);border-radius:26px;background:linear-gradient(145deg,rgba(88,245,140,.075),rgba(255,255,255,.015));position:relative;overflow:hidden}
+    .big-card::after{content:"B";position:absolute;right:-16px;bottom:-85px;font-weight:1000;font-size:250px;color:rgba(88,245,140,.035);line-height:1;pointer-events:none}.big-card p{color:#b5c8bc;max-width:720px}
+    .mini-stack{display:grid;gap:14px}.mini{padding:20px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.02)}.mini strong{display:block;margin-bottom:5px}.mini span{font-size:12px;color:var(--muted)}
+
+    /* PHASES */
+    .phases{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.phase{padding:23px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.02)}.phase .n{color:var(--green);font-size:11px;font-weight:900;letter-spacing:.15em;margin-bottom:28px}.phase ul{padding:0;margin:14px 0 0;list-style:none}.phase li{font-size:11px;color:var(--muted);padding:5px 0 5px 16px;position:relative}.phase li::before{content:"•";position:absolute;left:0;color:var(--green)}
+
+    /* CTA */
+    .cta{padding:110px 0}
+    .cta-box{position:relative;overflow:hidden;border:1px solid rgba(88,245,140,.23);border-radius:32px;padding:58px;background:linear-gradient(135deg,rgba(88,245,140,.13),rgba(255,255,255,.025));box-shadow:0 30px 80px rgba(0,0,0,.22)}
+    .cta-box::after{content:"";position:absolute;width:350px;height:350px;border-radius:50%;right:-120px;top:-150px;background:radial-gradient(circle,rgba(88,245,140,.20),transparent 67%)}
+    .cta-box h2{max-width:800px}.cta-box p{max-width:720px;color:#bad0c1;font-size:17px}.cta-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+
+    footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);font-size:12px}
+    .footer-grid{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.footer-links{display:flex;gap:18px;flex-wrap:wrap}.footer-links a:hover{color:var(--white)}
+
+    .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}.reveal.show{opacity:1;transform:none}
+
+    @media(max-width:980px){
+      .nav-links{display:none}
+      .hero-grid,.problem-wrap,.architecture,.why-grid{grid-template-columns:1fr}
+      .hero{padding-top:62px}.phone-stage{min-height:640px}
+      .proof-grid{grid-template-columns:repeat(2,1fr)}.proof:nth-child(2){border-right:0}.proof:nth-child(-n+2){border-bottom:1px solid var(--line)}
+      .grid-4,.flow,.phases{grid-template-columns:repeat(2,1fr)}
+      .grid-3,.case-grid{grid-template-columns:repeat(2,1fr)}
+      .step:nth-child(2)::after{display:none}
+    }
+    @media(max-width:640px){
+      .container{width:min(100% - 24px,var(--max))}
+      .section{padding:76px 0}
+      nav{height:66px}.nav-cta{padding:10px 12px;font-size:12px}
+      h1{font-size:48px}.hero-copy{font-size:16px}
+      .phone-stage{min-height:570px}.phone{width:270px;height:535px}.float-card.one{left:-4px;top:70px}.float-card.two{right:-4px;bottom:70px}
+      .proof-grid,.grid-2,.grid-3,.grid-4,.flow,.case-grid,.phases{grid-template-columns:1fr}
+      .proof{border-right:0!important;border-bottom:1px solid var(--line)!important}.proof:last-child{border-bottom:0!important}
+      .step::after{display:none!important}.node-row{grid-template-columns:1fr}
+      .cta-box{padding:34px 24px}.cta{padding:80px 0}
+      .quote-block p{font-size:22px}
+    }
+    @media print{
+      .nav-wrap,.hero-actions,.cta-actions{display:none!important}
+      body{background:#07110d!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .section,.hero,.cta{padding:42px 0;break-inside:avoid}
+      .reveal{opacity:1!important;transform:none!important}
+      a{color:inherit;text-decoration:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-wrap">
+    <div class="container">
+      <nav>
+        <a class="brand" href="https://www.bigcorps.com.br/" target="_blank" rel="noopener">
+          <span class="brand-mark">B</span>
+          <span>BigCorps<small>Tecnologia</small></span>
+        </a>
+        <div class="nav-links">
+          <a href="#matchplay">MatchPlay</a>
+          <a href="#escopo">Escopo</a>
+          <a href="#arquitetura">Tecnologia</a>
+          <a href="#cases">Soluções</a>
+          <a href="#bigcorps">BigCorps</a>
+        </div>
+        <a class="btn primary nav-cta" href="https://www.bigcorps.com.br/contato/" target="_blank" rel="noopener">Falar com a BigCorps ↗</a>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero" id="matchplay">
+      <div class="container hero-grid">
+        <div class="reveal">
+          <div class="hero-kicker"><span class="pulse"></span> Proposta técnica · MatchPlay + BigCorps</div>
+          <h1>A ideia já é boa.<br><span class="accent">Nós podemos construir.</span></h1>
+          <p class="hero-copy">O MatchPlay tem potencial para se tornar o ponto de encontro do esporte amador: descobrir atletas, formar partidas equilibradas, preencher vagas e criar uma comunidade baseada em proximidade, nível e reputação.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#escopo">Conhecer a solução ↓</a>
+            <a class="btn ghost" href="https://www.bigcorps.com.br/solucoes/" target="_blank" rel="noopener">Ver soluções BigCorps ↗</a>
+          </div>
+          <div class="hero-meta">
+            <div class="meta-item"><strong>Android primeiro</strong><span>Experiência nativa e preparada para evoluir</span></div>
+            <div class="meta-item"><strong>Infraestrutura dedicada</strong><span>Ambiente próprio e independente do MatchPlay</span></div>
+            <div class="meta-item"><strong>Escalável desde a base</strong><span>Realtime, localização e painel administrativo</span></div>
+          </div>
+        </div>
+
+        <div class="phone-stage reveal" aria-label="Conceito visual ilustrativo do aplicativo MatchPlay">
+          <div class="phone-glow"></div>
+          <div class="float-card one"><strong>12 jogos perto de você</strong><span>raio atual · 10 km</span></div>
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="notch"></div>
+              <div class="app-top"><div class="app-logo">Match<b>Play</b></div><div class="avatar"></div></div>
+              <div class="app-greeting"><small>Olá, atleta 👋</small><h4>Vamos jogar?</h4></div>
+              <div class="chips"><span class="chip active">Perto de mim</span><span class="chip">Tênis</span><span class="chip">Futebol</span><span class="chip">Hoje</span></div>
+              <div class="match-card">
+                <div class="sport-row"><div class="sport-icon">🎾</div><div class="distance">2,7 km</div></div>
+                <h5>Tênis · Intermediário</h5><p>Parque Esportivo Central</p>
+                <div class="match-info"><span>Hoje · 19:00</span><span>2 vagas</span><span>★ 4,9</span></div>
+                <div class="join">ENTRAR NA PARTIDA</div>
+              </div>
+              <div class="match-card">
+                <div class="sport-row"><div class="sport-icon">⚽</div><div class="distance">4,1 km</div></div>
+                <h5>Futebol Society</h5><p>Arena Norte · nível livre</p>
+                <div class="match-info"><span>Amanhã · 20:30</span><span>3 vagas</span><span>★ 4,8</span></div>
+                <div class="join">VER DETALHES</div>
+              </div>
+            </div>
+          </div>
+          <div class="float-card two"><strong>Match ideal encontrado</strong><span>mesmo nível · horário compatível</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="proof-strip">
+      <div class="container proof-grid">
+        <div class="proof"><strong>Geolocalização</strong><span>jogos e atletas por distância</span></div>
+        <div class="proof"><strong>Tempo real</strong><span>chat, presença e atualizações</span></div>
+        <div class="proof"><strong>Comunidade</strong><span>nível, reputação e conexões</span></div>
+        <div class="proof"><strong>Gestão</strong><span>painel web e moderação</span></div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container problem-wrap">
+        <div class="section-head reveal">
+          <span class="eyebrow">O desafio</span>
+          <h2>Quem quer jogar deveria gastar tempo <span class="accent">jogando</span>, não montando grupo.</h2>
+          <p class="lead">O MatchPlay organiza o que hoje fica espalhado entre grupos, mensagens, contatos e tentativas de última hora.</p>
+        </div>
+        <div class="reveal">
+          <div class="quote-block">
+            <p>“Perto de mim, no meu nível e no horário que funciona.”</p>
+            <small>Essa é a experiência que deve estar no centro do produto.</small>
+          </div>
+          <div class="feature-list" style="margin-top:18px">
+            <div class="feature-row"><div class="check">✓</div><div><strong>Descoberta por localização</strong><span>Mostrar partidas, atletas e locais dentro de um raio configurável.</span></div></div>
+            <div class="feature-row"><div class="check">✓</div><div><strong>Compatibilidade esportiva</strong><span>Modalidade, nível, disponibilidade e reputação ajudam a formar jogos melhores.</span></div></div>
+            <div class="feature-row"><div class="check">✓</div><div><strong>Menos desistências</strong><span>Confirmações, lembretes e histórico de presença fortalecem o compromisso.</span></div></div>
+            <div class="feature-row"><div class="check">✓</div><div><strong>Comunidade confiável</strong><span>Avaliações e moderação ajudam a construir uma rede saudável e segura.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="escopo">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Escopo proposto</span>
+          <h2>O MatchPlay, <span class="accent">de ponta a ponta.</span></h2>
+          <p class="lead">Uma primeira versão robusta para Android, com painel web completo e arquitetura preparada para novas plataformas e modelos de negócio no futuro.</p>
+        </div>
+        <div class="grid-3">
+          <div class="card reveal"><div class="card-num">01 · PERFIL</div><div class="icon">👤</div><h3>Perfil do atleta</h3><p>Foto, bio, modalidades, nível por esporte, estatísticas, presença e reputação.</p></div>
+          <div class="card reveal"><div class="card-num">02 · DESCOBERTA</div><div class="icon">📍</div><h3>Mapa & raio</h3><p>Jogos, atletas e locais próximos com filtros por distância, modalidade, nível e data.</p></div>
+          <div class="card reveal"><div class="card-num">03 · PARTIDAS</div><div class="icon">🏆</div><h3>Criar ou entrar</h3><p>Modalidade, local, data, hora, vagas, nível desejado e lista de participantes.</p></div>
+          <div class="card reveal"><div class="card-num">04 · PRESENÇA</div><div class="icon">✓</div><h3>Confirmações</h3><p>Controle de vagas, lembretes, confirmação e histórico para reduzir jogos furados.</p></div>
+          <div class="card reveal"><div class="card-num">05 · CONVERSA</div><div class="icon">💬</div><h3>Chat em tempo real</h3><p>Conversas da partida e comunicação entre atletas sem depender de grupos externos.</p></div>
+          <div class="card reveal"><div class="card-num">06 · ALERTAS</div><div class="icon">🔔</div><h3>Notificações</h3><p>OneSignal para convites, vagas, lembretes, mudanças na partida e atividades relevantes.</p></div>
+          <div class="card reveal"><div class="card-num">07 · REPUTAÇÃO</div><div class="icon">★</div><h3>Avaliações</h3><p>Pontualidade, fair play, nível real e avaliação dos locais e estruturas utilizadas.</p></div>
+          <div class="card reveal"><div class="card-num">08 · CONEXÕES</div><div class="icon">🤝</div><h3>Favoritos & parceiros</h3><p>Salvar atletas, locais e parceiros recorrentes para reunir a turma novamente com facilidade.</p></div>
+          <div class="card reveal"><div class="card-num">09 · ADMIN</div><div class="icon">⚙</div><h3>Painel administrativo</h3><p>Usuários, modalidades, locais, denúncias, moderação, métricas e gestão da comunidade.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Jornada</span>
+          <h2>Do “quero jogar” ao <span class="accent">jogo confirmado.</span></h2>
+          <p class="lead">A experiência precisa ser curta, intuitiva e útil desde o primeiro acesso.</p>
+        </div>
+        <div class="flow">
+          <div class="step reveal"><h3>Cria o perfil</h3><p>Escolhe esportes, nível e preferências principais.</p></div>
+          <div class="step reveal"><h3>Encontra perto</h3><p>Vê oportunidades por distância, data e compatibilidade.</p></div>
+          <div class="step reveal"><h3>Entra ou cria</h3><p>Participa de um jogo aberto ou agenda a própria partida.</p></div>
+          <div class="step reveal"><h3>Joga & avalia</h3><p>Confirma presença, conversa, joga e fortalece sua reputação.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="arquitetura">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Arquitetura</span>
+          <h2>Tecnologia moderna, <span class="accent">sem complexidade desnecessária.</span></h2>
+          <p class="lead">A BigCorps propõe uma arquitetura independente para o MatchPlay, com serviços maduros, escaláveis e alinhados à forma como já construímos nossos próprios produtos.</p>
+        </div>
+        <div class="architecture">
+          <div class="arch-stack reveal">
+            <div class="tech"><b>Aplicativo</b><span>React Native + Expo · Android</span></div>
+            <div class="tech"><b>Painel web</b><span>Next.js · Vercel</span></div>
+            <div class="tech"><b>Backend & banco</b><span>Supabase · PostgreSQL</span></div>
+            <div class="tech"><b>Busca por proximidade</b><span>PostGIS · índices geoespaciais</span></div>
+            <div class="tech"><b>Tempo real</b><span>Supabase Realtime</span></div>
+            <div class="tech"><b>Notificações</b><span>OneSignal</span></div>
+            <div class="tech"><b>Mapas & endereços</b><span>Google Maps Platform</span></div>
+            <div class="tech"><b>Fotos & arquivos</b><span>Storage com controle de acesso</span></div>
+            <div class="tech"><b>Segurança</b><span>RLS, autenticação e LGPD</span></div>
+          </div>
+          <div class="arch-visual card reveal">
+            <div class="node-row">
+              <div class="node">Android<small>app do atleta</small></div>
+              <div class="node">Painel Web<small>gestão</small></div>
+              <div class="node">Web público<small>evolução futura</small></div>
+            </div>
+            <div class="connector">↓</div>
+            <div class="node core">SUPABASE DEDICADO AO MATCHPLAY<small>Auth · PostgreSQL · PostGIS · Realtime · Storage · Edge Functions</small></div>
+            <div class="connector">↓</div>
+            <div class="node-row">
+              <div class="node">Google Maps<small>mapa & lugares</small></div>
+              <div class="node">OneSignal<small>push</small></div>
+              <div class="node">Vercel<small>web & admin</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="card reveal" style="margin-top:20px;padding:28px">
+          <div class="card-num">DECISÃO DE ARQUITETURA</div>
+          <h3>O MatchPlay nasce como produto independente.</h3>
+          <p>Banco, autenticação, arquivos, funções e dados ficam em um projeto próprio do MatchPlay. Isso evita dependência de outros produtos da BigCorps, simplifica segurança e manutenção e deixa a plataforma preparada para crescer, mudar de equipe ou receber novos canais no futuro.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="bigcorps">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Por que BigCorps</span>
+          <h2>Não estamos começando do zero. <span class="accent">Já construímos produtos reais.</span></h2>
+          <p class="lead">A mesma base de engenharia usada nos produtos BigCorps pode ser aplicada ao MatchPlay com infraestrutura própria e identidade exclusiva.</p>
+        </div>
+        <div class="why-grid">
+          <div class="big-card reveal">
+            <span class="eyebrow">Engenharia de produto</span>
+            <h2 style="font-size:clamp(34px,4vw,52px)">Da ideia ao produto em produção.</h2>
+            <p>Desenvolvemos aplicações web, aplicativos, inteligência artificial, automações, integrações, pagamentos, experiências em tempo real e produtos com operação contínua. O MatchPlay reúne competências que já usamos diariamente: mobile, localização, banco em nuvem, notificações, dashboards, autenticação e experiência orientada ao usuário.</p>
+            <div class="hero-actions" style="margin:26px 0 0">
+              <a class="btn primary" href="https://www.bigcorps.com.br/" target="_blank" rel="noopener">Conhecer a BigCorps ↗</a>
+              <a class="btn ghost" href="https://www.bigcorps.com.br/solucoes/" target="_blank" rel="noopener">Todas as soluções ↗</a>
+            </div>
+          </div>
+          <div class="mini-stack reveal">
+            <div class="mini"><strong>Infraestrutura organizada</strong><span>Ambientes separados, versionamento e componentes preparados para evolução.</span></div>
+            <div class="mini"><strong>Produto, não apenas telas</strong><span>Fluxos, regras, segurança, administração e operação pensados como uma plataforma completa.</span></div>
+            <div class="mini"><strong>Integrações maduras</strong><span>Google, notificações, pagamentos, APIs externas e serviços em nuvem fazem parte da nossa rotina.</span></div>
+            <div class="mini"><strong>Evolução contínua</strong><span>A arquitetura permite adicionar iOS, monetização, reservas, IA e novas modalidades sem reconstruir a base.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="cases">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Soluções BigCorps</span>
+          <h2>Produtos que demonstram <span class="accent">nossa capacidade.</span></h2>
+          <p class="lead">Conheça algumas soluções já desenvolvidas e operadas pela BigCorps.</p>
+        </div>
+        <div class="case-grid">
+          <a class="case reveal" href="https://www.bigcorps.com.br/solucoes/minhai" target="_blank" rel="noopener">
+            <div><div class="case-tag">IA · Integrações · SaaS</div><h3>minhAi</h3><p>Assistente virtual com voz e texto, canais digitais, integrações Google e Meta e automação de processos.</p></div><span class="case-link">Ver solução</span>
+          </a>
+          <a class="case reveal" href="https://www.bigcorps.com.br/solucoes/monitoria" target="_blank" rel="noopener">
+            <div><div class="case-tag">Tempo real · IA · Monitoramento</div><h3>MonitorIA</h3><p>Plataforma que transforma câmeras existentes em uma memória visual pesquisável e organizada por acontecimentos.</p></div><span class="case-link">Ver solução</span>
+          </a>
+          <a class="case reveal" href="https://www.bigcorps.com.br/solucoes/srrotas" target="_blank" rel="noopener">
+            <div><div class="case-tag">Android · Mobilidade · Dados</div><h3>Sr. Rotas</h3><p>Copiloto para motoristas de aplicativo com análise em tempo real, histórico de jornada e experiência móvel.</p></div><span class="case-link">Ver solução</span>
+          </a>
+          <a class="case reveal" href="https://www.bigcorps.com.br/solucoes/conviteia" target="_blank" rel="noopener">
+            <div><div class="case-tag">WebApp · Google · Eventos</div><h3>Convite IA</h3><p>Plataforma de convites digitais com publicação, confirmações, experiências interativas e recursos para eventos.</p></div><span class="case-link">Ver solução</span>
+          </a>
+          <a class="case reveal" href="https://www.bigcorps.com.br/solucoes/artefinal" target="_blank" rel="noopener">
+            <div><div class="case-tag">SaaS · Arquivos · Automação</div><h3>ArteFinal</h3><p>Ferramentas inteligentes para preparação, conversão e fechamento de arquivos para produção gráfica.</p></div><span class="case-link">Ver solução</span>
+          </a>
+          <a class="case reveal" href="https://www.bigcorps.com.br/solucoes/pixwiki" target="_blank" rel="noopener">
+            <div><div class="case-tag">Pagamentos · PIX · Automação</div><h3>Pix Wiki</h3><p>Links de cobrança Pix personalizados com confirmação automática e experiência simples para empresas e clientes.</p></div><span class="case-link">Ver solução</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Construção</span>
+          <h2>Um projeto dividido em <span class="accent">entregas claras.</span></h2>
+          <p class="lead">A execução pode ser organizada em fases para validar experiência, arquitetura e produto antes de avançar cada camada.</p>
+        </div>
+        <div class="phases">
+          <div class="phase reveal"><div class="n">FASE 01</div><h3>Produto & UX</h3><ul><li>Fluxos completos</li><li>Regras do MatchPlay</li><li>Identidade e telas</li><li>Protótipo navegável</li></ul></div>
+          <div class="phase reveal"><div class="n">FASE 02</div><h3>Base técnica</h3><ul><li>Supabase dedicado</li><li>Banco e permissões</li><li>Geolocalização</li><li>Painel administrativo</li></ul></div>
+          <div class="phase reveal"><div class="n">FASE 03</div><h3>App Android</h3><ul><li>Perfis e partidas</li><li>Mapa e feed</li><li>Chat e avaliações</li><li>OneSignal</li></ul></div>
+          <div class="phase reveal"><div class="n">FASE 04</div><h3>Validação & publicação</h3><ul><li>Testes integrados</li><li>Ajustes de produção</li><li>Políticas e LGPD</li><li>Publicação Android</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Pronto para evoluir</span>
+          <h2>A primeira versão resolve o essencial. <span class="accent">A base permite ir além.</span></h2>
+        </div>
+        <div class="grid-4">
+          <div class="card reveal"><div class="icon"></div><h3>iOS</h3><p>Adicionar a versão para iPhone em uma fase futura aproveitando a base móvel compartilhada.</p></div>
+          <div class="card reveal"><div class="icon">✨</div><h3>Match inteligente</h3><p>Recomendar atletas e partidas com base em nível, distância, agenda e comportamento.</p></div>
+          <div class="card reveal"><div class="icon">💳</div><h3>Monetização</h3><p>Planos, destaque de partidas, parceiros, reservas ou recursos premium quando fizer sentido.</p></div>
+          <div class="card reveal"><div class="icon">🏟</div><h3>Quadras & clubes</h3><p>Perfis comerciais, disponibilidade, reservas e novas oportunidades para parceiros esportivos.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="container">
+        <div class="cta-box reveal">
+          <span class="eyebrow">MatchPlay + BigCorps</span>
+          <h2>O próximo passo é transformar a visão em <span class="accent">produto.</span></h2>
+          <p>A BigCorps está preparada para desenvolver o MatchPlay com uma arquitetura própria, moderna e escalável — começando pelo Android e painel web, sem limitar o que a plataforma poderá se tornar depois.</p>
+          <div class="cta-actions">
+            <a class="btn primary" href="https://wa.me/5511926828418?text=Ol%C3%A1%2C%20quero%20conversar%20sobre%20o%20projeto%20MatchPlay." target="_blank" rel="noopener">Conversar no WhatsApp ↗</a>
+            <a class="btn ghost" href="mailto:contato@bigcorps.com.br?subject=Projeto%20MatchPlay">contato@bigcorps.com.br</a>
+            <a class="btn ghost" href="https://www.bigcorps.com.br/" target="_blank" rel="noopener">bigcorps.com.br ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>© 2026 BigCorps Tecnologia · Proposta técnica para o projeto MatchPlay.</div>
+      <div class="footer-links">
+        <a href="https://www.bigcorps.com.br/" target="_blank" rel="noopener">BigCorps</a>
+        <a href="https://www.bigcorps.com.br/solucoes/" target="_blank" rel="noopener">Soluções</a>
+        <a href="https://www.bigcorps.com.br/contato/" target="_blank" rel="noopener">Contato</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Animações progressivas discretas; sem dependências externas.
+    const reveal = () => {
+      const els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(el => el.classList.add('show'));
+        return;
+      }
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08 });
+      els.forEach(el => observer.observe(el));
+    };
+    document.addEventListener('DOMContentLoaded', reveal);
+  </script>
+</body>
+</html>
