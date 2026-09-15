@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07131a" />
+  <meta name="description" content="Proposta técnica da BigCorps para construção do IndicaPro — plataforma de indicações, reputação, classificados e descoberta local." />
+  <title>IndicaPro — Proposta Técnica | BigCorps</title>
+  <style>
+    :root{
+      --bg:#061219;
+      --bg-2:#091b24;
+      --surface:#0b202b;
+      --surface-2:#0e2936;
+      --card:#0b1c25;
+      --line:rgba(255,255,255,.10);
+      --line-strong:rgba(67,190,232,.30);
+      --text:#f4fbff;
+      --muted:#9eb6c2;
+      --cyan:#46bde8;
+      --cyan-2:#2f9dcc;
+      --cyan-soft:#9ee5ff;
+      --blue:#345f76;
+      --white:#ffffff;
+      --shadow:0 30px 80px rgba(0,0,0,.36);
+      --radius:26px;
+      --radius-sm:18px;
+      --max:1180px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 12% -10%, rgba(70,189,232,.15), transparent 30%),
+        radial-gradient(circle at 95% 15%, rgba(47,157,204,.10), transparent 28%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.55;
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    button,a{-webkit-tap-highlight-color:transparent}
+
+    .container{width:min(var(--max),calc(100% - 40px));margin:0 auto}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:9px;
+      font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+      color:var(--cyan);
+    }
+    .eyebrow::before{content:"";width:26px;height:2px;background:var(--cyan);border-radius:99px}
+    .section{padding:104px 0;position:relative}
+    .section.alt{background:rgba(255,255,255,.018);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .section-head{max-width:790px;margin-bottom:48px}
+    h1,h2,h3,p{margin-top:0}
+    h1{
+      font-size:clamp(48px,7.2vw,92px);
+      line-height:.93;
+      letter-spacing:-.055em;
+      margin-bottom:28px;
+    }
+    h2{
+      font-size:clamp(34px,4.5vw,58px);
+      line-height:1.02;
+      letter-spacing:-.04em;
+      margin:12px 0 18px;
+    }
+    h3{font-size:21px;line-height:1.15;letter-spacing:-.02em;margin-bottom:10px}
+    .lead{font-size:clamp(18px,2vw,22px);color:#bfd2dc;max-width:810px}
+    .muted{color:var(--muted)}
+    .accent{color:var(--cyan)}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:9px;
+      padding:14px 19px;border-radius:14px;font-weight:800;font-size:14px;
+      transition:.2s ease;border:1px solid transparent;
+    }
+    .btn.primary{background:var(--cyan);color:#061219;box-shadow:0 10px 35px rgba(70,189,232,.16)}
+    .btn.primary:hover{transform:translateY(-2px);background:#73d5f7}
+    .btn.ghost{border-color:var(--line);background:rgba(255,255,255,.025);color:var(--white)}
+    .btn.ghost:hover{border-color:rgba(70,189,232,.35);background:rgba(70,189,232,.06)}
+
+    /* HERO */
+    .hero{padding:86px 0 84px;position:relative;overflow:hidden}
+    .hero::after{
+      content:"";position:absolute;width:620px;height:620px;border:1px solid rgba(70,189,232,.09);border-radius:50%;right:-260px;top:-160px;
+      box-shadow:0 0 0 70px rgba(70,189,232,.022),0 0 0 140px rgba(70,189,232,.012);pointer-events:none;
+    }
+    .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:70px;align-items:center}
+    .logo-lockup{
+      width:min(360px,82%);
+      margin-bottom:23px;
+      background:transparent;
+      padding:0;
+      border-radius:0;
+      box-shadow:none;
+    }
+    .logo-lockup .indicapro-svg{
+      width:100%;
+      height:auto;
+      display:block;
+      overflow:visible;
+      filter:drop-shadow(0 10px 24px rgba(0,0,0,.18));
+    }
+    /* No fundo escuro da proposta, o nome "Indica" fica claro sem alterar
+       as formas vetoriais do logotipo; o azul original de "Pro" é preservado. */
+    .logo-lockup .logo-indica{fill:#f4fbff}
+    .hero-kicker{
+      display:inline-flex;gap:10px;align-items:center;border:1px solid var(--line-strong);background:rgba(70,189,232,.06);
+      color:#d6f5ff;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:750;margin-bottom:23px;
+    }
+    .pulse{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 6px rgba(70,189,232,.11)}
+    .hero-copy{color:#b9ccd5;font-size:18px;max-width:720px;margin-bottom:30px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:38px}
+    .hero-meta{display:flex;gap:28px;flex-wrap:wrap}
+    .meta-item strong{display:block;color:var(--white);font-size:14px}
+    .meta-item span{font-size:12px;color:var(--muted)}
+
+    /* PHONE */
+    .phone-stage{position:relative;min-height:620px;display:grid;place-items:center}
+    .phone-glow{position:absolute;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle,rgba(70,189,232,.20),transparent 65%);filter:blur(2px)}
+    .phone{
+      position:relative;width:312px;height:618px;border-radius:46px;padding:11px;background:#020608;border:1px solid rgba(255,255,255,.17);
+      box-shadow:var(--shadow),0 0 0 8px rgba(255,255,255,.025);transform:rotate(2.5deg);
+    }
+    .phone-screen{height:100%;border-radius:36px;overflow:hidden;background:linear-gradient(180deg,#f6fbfd,#eaf6fb);position:relative;color:#15313f}
+    .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:92px;height:23px;background:#020608;border-radius:99px;z-index:4}
+    .app-top{padding:52px 18px 12px;display:flex;align-items:center;justify-content:space-between}
+    .app-wordmark{font-weight:1000;font-size:21px;letter-spacing:-.05em;color:#203340}
+    .app-wordmark b{color:#35aeda}
+    .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(145deg,#d8f5ff,#4cbde6);border:2px solid #fff}
+    .app-greeting{padding:0 18px 10px}
+    .app-greeting small{color:#718d9b}
+    .app-greeting h4{font-size:22px;margin:2px 0 0;letter-spacing:-.03em}
+    .app-search{margin:0 17px 13px;padding:12px 13px;border-radius:13px;background:#fff;border:1px solid rgba(19,81,108,.10);font-size:11px;color:#7a939f;box-shadow:0 7px 20px rgba(36,93,116,.06)}
+    .chips{display:flex;gap:7px;padding:0 17px 14px;overflow:hidden}
+    .chip{white-space:nowrap;font-size:9.5px;padding:7px 10px;border-radius:99px;border:1px solid rgba(32,85,108,.13);color:#6d8793;background:#fff}
+    .chip.active{background:var(--cyan);color:#07131a;border-color:var(--cyan);font-weight:850}
+    .rec-card{margin:0 13px 11px;background:#fff;border:1px solid rgba(32,85,108,.10);border-radius:18px;padding:13px;box-shadow:0 8px 22px rgba(35,84,105,.07)}
+    .rec-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .rec-icon{width:42px;height:42px;border-radius:13px;background:#e5f7fd;display:grid;place-items:center;font-size:19px}
+    .distance{font-size:9px;color:#238ab6;font-weight:850;background:#eaf8fd;padding:5px 7px;border-radius:99px}
+    .rec-card h5{font-size:14px;margin:9px 0 2px;letter-spacing:-.01em}
+    .rec-card p{font-size:9.5px;color:#7b929d;margin:0}
+    .recommend{margin-top:8px;font-size:10px;color:#177eaa;font-weight:850}
+    .tagline{display:flex;justify-content:space-between;gap:8px;margin-top:10px;font-size:8.5px;color:#6f8995}
+    .view{margin-top:10px;height:31px;border-radius:10px;background:#37b3df;color:#07131a;font-weight:900;font-size:9px;display:grid;place-items:center}
+    .float-card{position:absolute;background:rgba(9,27,36,.93);border:1px solid var(--line-strong);backdrop-filter:blur(15px);border-radius:17px;padding:13px 15px;box-shadow:0 18px 45px rgba(0,0,0,.28);font-size:12px}
+    .float-card.one{left:-8px;top:98px} .float-card.two{right:-12px;bottom:104px}
+    .float-card strong{display:block;font-size:13px} .float-card span{color:var(--muted);font-size:10px}
+
+    /* STRIP */
+    .proof-strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.018)}
+    .proof-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+    .proof{padding:28px 24px;border-right:1px solid var(--line)} .proof:last-child{border-right:0}
+    .proof strong{display:block;font-size:21px;letter-spacing:-.03em} .proof span{font-size:12px;color:var(--muted)}
+
+    /* COMMON CARDS */
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .card{background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018));border:1px solid var(--line);border-radius:var(--radius-sm);padding:25px;position:relative;overflow:hidden}
+    .card:hover{border-color:rgba(70,189,232,.27)}
+    .card-num{font-size:11px;font-weight:900;letter-spacing:.12em;color:var(--cyan);margin-bottom:22px}
+    .icon{width:45px;height:45px;border-radius:14px;display:grid;place-items:center;background:rgba(70,189,232,.09);border:1px solid rgba(70,189,232,.18);font-size:21px;margin-bottom:20px}
+    .card p{color:var(--muted);font-size:14px;margin-bottom:0}
+
+    /* PROBLEM / SOLUTION */
+    .problem-wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:60px;align-items:start}
+    .quote-block{padding:34px;border-left:3px solid var(--cyan);background:linear-gradient(90deg,rgba(70,189,232,.08),transparent);border-radius:0 22px 22px 0}
+    .quote-block p{font-size:26px;line-height:1.25;letter-spacing:-.03em;margin:0} .quote-block small{display:block;color:var(--muted);margin-top:16px}
+    .feature-list{display:grid;gap:14px}
+    .feature-row{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:16px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.018)}
+    .check{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(70,189,232,.12);color:var(--cyan);font-weight:900}
+    .feature-row strong{display:block;font-size:14px} .feature-row span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+
+    /* FLOW */
+    .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;counter-reset:steps}
+    .step{counter-increment:steps;position:relative;padding:28px 22px 26px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.02)}
+    .step::before{content:"0" counter(steps);display:block;color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.15em;margin-bottom:38px}
+    .step:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:50%;transform:translateY(-50%);z-index:2;width:26px;height:26px;border-radius:50%;background:#0e2936;border:1px solid var(--line);display:grid;place-items:center;color:var(--cyan);font-size:12px}
+    .step p{font-size:13px;color:var(--muted);margin:0}
+
+    /* REPUTATION */
+    .reputation{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:stretch}
+    .score-card{padding:34px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,rgba(70,189,232,.08),rgba(255,255,255,.018));position:relative;overflow:hidden}
+    .score-card::after{content:"♥";position:absolute;right:-5px;bottom:-72px;font-size:220px;line-height:1;color:rgba(70,189,232,.045)}
+    .score-card .big-number{font-size:54px;font-weight:950;letter-spacing:-.05em;color:var(--cyan);line-height:1;margin:18px 0 4px}
+    .score-card .label{font-size:13px;color:#c6d9e2;font-weight:750}
+    .mini-stack{display:grid;gap:14px}
+    .mini{padding:20px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.02)}
+    .mini strong{display:block;margin-bottom:5px} .mini span{font-size:12px;color:var(--muted)}
+
+    /* ARCHITECTURE */
+    .architecture{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:stretch}
+    .arch-stack{padding:28px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(150deg,rgba(70,189,232,.055),rgba(255,255,255,.018))}
+    .tech{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+    .tech:last-child{border-bottom:0} .tech b{font-size:14px} .tech span{font-size:12px;color:var(--muted);text-align:right}
+    .arch-visual{display:grid;align-content:center;gap:12px;padding:26px}
+    .node{border:1px solid var(--line);border-radius:16px;padding:15px 18px;text-align:center;background:rgba(255,255,255,.025);font-size:13px;font-weight:800}
+    .node.core{background:rgba(70,189,232,.11);border-color:rgba(70,189,232,.31);color:#dcf6ff;padding:22px}
+    .connector{text-align:center;color:var(--cyan);height:17px;line-height:17px}
+    .node-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .node small{display:block;color:var(--muted);font-size:9px;font-weight:600;margin-top:3px}
+
+    /* CASES */
+    .case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .case{min-height:260px;display:flex;flex-direction:column;justify-content:space-between;padding:25px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,rgba(255,255,255,.04),rgba(255,255,255,.015));transition:.2s ease}
+    .case:hover{transform:translateY(-3px);border-color:rgba(70,189,232,.30)}
+    .case-tag{font-size:10px;font-weight:850;letter-spacing:.12em;color:var(--cyan);text-transform:uppercase}
+    .case h3{font-size:25px;margin:12px 0 8px} .case p{color:var(--muted);font-size:13px}
+    .case-link{font-size:12px;font-weight:850;color:#d8f4ff;display:flex;align-items:center;gap:7px}
+    .case-link::after{content:"↗";color:var(--cyan)}
+
+    /* WHY */
+    .why-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:24px}
+    .big-card{padding:38px;border:1px solid var(--line);border-radius:26px;background:linear-gradient(145deg,rgba(70,189,232,.08),rgba(255,255,255,.015));position:relative;overflow:hidden}
+    .big-card::after{content:"B";position:absolute;right:-16px;bottom:-85px;font-weight:1000;font-size:250px;color:rgba(70,189,232,.035);line-height:1;pointer-events:none}
+    .big-card p{color:#b9ccd5;max-width:720px}
+
+    /* PHASES */
+    .phases{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .phase{padding:23px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.02)}
+    .phase .n{color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.15em;margin-bottom:28px}
+    .phase ul{padding:0;margin:14px 0 0;list-style:none}
+    .phase li{font-size:11px;color:var(--muted);padding:5px 0 5px 16px;position:relative}
+    .phase li::before{content:"•";position:absolute;left:0;color:var(--cyan)}
+
+    /* CTA */
+    .cta{padding:110px 0}
+    .cta-box{position:relative;overflow:hidden;border:1px solid rgba(70,189,232,.26);border-radius:32px;padding:58px;background:linear-gradient(135deg,rgba(70,189,232,.15),rgba(255,255,255,.025));box-shadow:0 30px 80px rgba(0,0,0,.22)}
+    .cta-box::after{content:"";position:absolute;width:350px;height:350px;border-radius:50%;right:-120px;top:-150px;background:radial-gradient(circle,rgba(70,189,232,.23),transparent 67%)}
+    .cta-box h2{max-width:840px} .cta-box p{max-width:760px;color:#c0d5df;font-size:17px}
+    .cta-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+
+    footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);font-size:12px}
+    .footer-grid{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    .footer-links{display:flex;gap:18px;flex-wrap:wrap} .footer-links a:hover{color:var(--white)}
+
+    .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.show{opacity:1;transform:none}
+
+    @media(max-width:980px){
+      .hero-grid,.problem-wrap,.architecture,.why-grid,.reputation{grid-template-columns:1fr}
+      .hero{padding-top:62px} .phone-stage{min-height:650px}
+      .proof-grid{grid-template-columns:repeat(2,1fr)} .proof:nth-child(2){border-right:0} .proof:nth-child(-n+2){border-bottom:1px solid var(--line)}
+      .grid-4,.flow,.phases{grid-template-columns:repeat(2,1fr)}
+      .grid-3,.case-grid{grid-template-columns:repeat(2,1fr)}
+      .step:nth-child(2)::after{display:none}
+    }
+    @media(max-width:640px){
+      .container{width:min(100% - 24px,var(--max))}
+      .section{padding:76px 0}
+      h1{font-size:48px} .hero-copy{font-size:16px}
+      .logo-lockup{width:310px;max-width:90%}
+      .phone-stage{min-height:575px} .phone{width:270px;height:540px}
+      .float-card.one{left:-4px;top:70px} .float-card.two{right:-4px;bottom:70px}
+      .proof-grid,.grid-2,.grid-3,.grid-4,.flow,.case-grid,.phases{grid-template-columns:1fr}
+      .proof{border-right:0!important;border-bottom:1px solid var(--line)!important} .proof:last-child{border-bottom:0!important}
+      .step::after{display:none!important} .node-row{grid-template-columns:1fr}
+      .cta-box{padding:34px 24px} .cta{padding:80px 0}
+      .quote-block p{font-size:22px}
+    }
+    @media print{
+      .hero-actions,.cta-actions{display:none!important}
+      body{background:#07131a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .section,.hero,.cta{padding:42px 0;break-inside:avoid}
+      .reveal{opacity:1!important;transform:none!important}
+      a{color:inherit;text-decoration:none}
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero" id="indicapro">
+      <div class="container hero-grid">
+        <div class="reveal">
+          <div class="logo-lockup" aria-label="Logo IndicaPro">
+            <svg
+  class="indicapro-svg"
+  width="252"
+  height="85"
+  viewBox="0 0 252 85"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label="IndicaPro"
+>
+  <defs>
+    <linearGradient id="indicaproGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4b8fc2" />
+      <stop offset="1" stop-color="#4ebfd0" />
+    </linearGradient>
+  </defs>
+
+  <circle cx="39" cy="43" r="31" fill="url(#indicaproGradient)" />
+
+  <circle
+    cx="36.5"
+    cy="40.5"
+    r="11.4"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="2.6"
+  />
+
+  <line
+    x1="44.6"
+    y1="48.6"
+    x2="52.1"
+    y2="56.1"
+    stroke="#ffffff"
+    stroke-width="2.6"
+    stroke-linecap="round"
+  />
+
+  <path
+    class="logo-indica"
+    fill="#242b31"
+    d="M 90.922852,33.263672 H 86.490234 V 58 h 4.432618 z
+    m 9.097658,13.862305
+    c 0,-2.689454 1.66015,-4.25 3.96777,-4.25
+    2.25781,0 3.61914,1.49414 3.61914,3.984375
+    V 58 h 4.31641 V 46.196289
+    c 0,-4.46582 -2.52344,-6.989258 -6.3418,-6.989258
+    -2.72265,0 -4.64844,1.328125 -5.744139,3.934571
+    l -0.0498,-3.702149 H 95.704102 V 58 h 4.316408 z
+
+    m 23.32519,11.206054
+    c 3.2041,0 4.63184,-1.925781 5.3125,-3.270508
+    h 0.26563 V 58 h 4.2334 V 33.263672
+    h -4.31641 v 9.24707 h -0.18262
+    c -0.66406,-1.311523 -2.02539,-3.303711 -5.3291,-3.303711
+    -4.2832,0 -7.63672,3.370117 -7.63672,9.545899
+    0,6.092773 3.25391,9.579101 7.65332,9.579101 z
+
+    m 1.17871,-3.552734
+    c -2.88867,0 -4.41601,-2.556641 -4.41601,-6.042969
+    0,-3.453125 1.49414,-5.976562 4.41601,-5.976562
+    2.83887,0 4.39942,2.357421 4.39942,5.976562
+    0,3.619141 -1.59375,6.042969 -4.39942,6.042969 z
+
+    M 137.72266,58 h 4.3164 V 39.439453 h -4.3164 z
+
+    m 2.1582,-21.183594
+    c 1.37793,0 2.52344,-1.0625 2.52344,-2.374023
+    0,-1.311524 -1.14551,-2.357422 -2.52344,-2.357422
+    -1.37793,0 -2.50684,1.045898 -2.50684,2.357422
+    0,1.311523 1.12891,2.374023 2.50684,2.374023 z
+
+    m 14.79199,21.56543
+    c 4.16699,0 7.25488,-2.257813 8.05176,-5.959961
+    l -4.03418,-0.84668
+    c -0.44824,2.008789 -1.85938,3.303711 -3.98438,3.303711
+    -3.00488,0 -4.49902,-2.639648 -4.49902,-6.076172
+    0,-3.469726 1.49414,-6.092773 4.49902,-6.092773
+    2.0918,0 3.46973,1.245117 3.93457,3.170898
+    l 4.03418,-0.846679
+    c -0.79687,-3.619141 -3.86816,-5.827149 -8.00195,-5.827149
+    -5.41211,0 -8.86523,3.834961 -8.86523,9.612305
+    0,5.710937 3.45312,9.5625 8.86523,9.5625 z
+
+    m 17.26563,0
+    c 2.88867,0 4.64843,-1.344727 5.46191,-2.938477
+    h 0.16602 V 58 h 4.13379 V 45.598633
+    c 0,-4.947266 -4.08399,-6.391602 -7.57032,-6.391602
+    -3.71875,0 -6.77343,1.577149 -7.86914,4.847656
+    l 4.00098,0.813477
+    c 0.44824,-1.228516 1.72656,-2.34082 3.88476,-2.34082
+    2.1084,0 3.23731,1.0625 3.23731,2.87207
+    v 0.08301
+    c 0,1.27832 -1.36133,1.328125 -4.58203,1.676758
+    -3.58594,0.381836 -7.07227,1.444336 -7.07227,5.627929
+    0,3.652344 2.67285,5.594727 6.20899,5.594727 z
+
+    m 1.1123,-3.204102
+    c -1.82617,0 -3.13769,-0.830078 -3.13769,-2.440429
+    0,-1.69336 1.46093,-2.407227 3.40332,-2.672852
+    1.1123,-0.149414 3.51953,-0.448242 4.10058,-0.913086
+    v 2.191406
+    c 0,2.058594 -1.70996,3.834961 -4.36621,3.834961 z"
+  />
+
+  <path
+    fill="#49add0"
+    d="m 186.48145,58
+    h 4.43261
+    v -8.367188
+    h 4.74805
+    c 5.71094,0 8.78223,-3.436523 8.78223,-8.18457
+    0,-4.714844 -3.02149,-8.18457 -8.71582,-8.18457
+    h -9.24707 z
+
+    m 4.43261,-12.019531
+    v -8.998047
+    h 4.13379
+    c 3.38672,0 4.86426,1.826172 4.86426,4.46582
+    0,2.639649 -1.47754,4.532227 -4.83106,4.532227 z
+
+    M 208.21289,58
+    h 4.31641
+    V 47.076172
+    c 0,-2.357422 1.77636,-4.017578 4.18359,-4.017578
+    0.76367,0 1.67676,0.116211 2.04199,0.21582
+    v -3.967773
+    c -0.41504,-0.06641 -1.0957,-0.116211 -1.57715,-0.116211
+    -2.125,0 -3.91796,1.211914 -4.58203,3.353515
+    h -0.19922
+    v -3.104492
+    h -4.18359 z
+
+    m 20.80176,0.381836
+    c 5.41211,0 8.88183,-3.851563 8.88183,-9.5625
+    0,-5.777344 -3.46972,-9.612305 -8.88183,-9.612305
+    -5.41211,0 -8.86524,3.834961 -8.86524,9.612305
+    0,5.710937 3.45313,9.5625 8.86524,9.5625 z
+
+    m 0,-3.50293
+    c -3.00488,0 -4.46582,-2.689453 -4.46582,-6.076172
+    0,-3.419922 1.46094,-6.092773 4.46582,-6.092773
+    3.02148,0 4.49902,2.672851 4.49902,6.092773
+    0,3.386719 -1.47754,6.076172 -4.49902,6.076172 z"
+  />
+</svg>
+          </div>
+          <div class="hero-kicker"><span class="pulse"></span> Proposta técnica · IndicaPro + BigCorps</div>
+          <h1>IndicaPro.<br><span class="accent">Encontre quem as pessoas realmente recomendam.</span></h1>
+          <p class="hero-copy">Profissionais, empresas, serviços e oportunidades descobertos pela proximidade e fortalecidos pela confiança de pessoas reais. Uma ideia da JOY, com tecnologia e desenvolvimento BigCorps.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#escopo">Conhecer a solução ↓</a>
+            <a class="btn ghost" href="https://www.bigcorps.com.br/solucoes/" target="_blank" rel="noopener">Ver soluções BigCorps ↗</a>
+          </div>
+          <div class="hero-meta">
+            <div class="meta-item"><strong>Gratuito para começar</strong><span>Comunidade aberta e preparada para crescer</span></div>
+            <div class="meta-item"><strong>Reputação real</strong><span>indicações feitas por usuários identificados</span></div>
+            <div class="meta-item"><strong>Descoberta local</strong><span>proximidade + relevância + recomendações</span></div>
+          </div>
+        </div>
+
+        <div class="phone-stage reveal" aria-label="Conceito visual ilustrativo do aplicativo IndicaPro">
+          <div class="phone-glow"></div>
+          <div class="float-card one"><strong>1.284 recomendações perto de você</strong><span>na sua região</span></div>
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="notch"></div>
+              <div class="app-top"><div class="app-wordmark">Indica<b>Pro</b></div><div class="avatar"></div></div>
+              <div class="app-greeting"><small>Olá, Mariana 👋</small><h4>O que você procura?</h4></div>
+              <div class="app-search">⌕ Buscar serviço, profissional ou empresa...</div>
+              <div class="chips"><span class="chip active">Perto de mim</span><span class="chip">Mais indicados</span><span class="chip">Serviços</span><span class="chip">Classificados</span></div>
+
+              <div class="rec-card">
+                <div class="rec-row"><div class="rec-icon">❄️</div><div class="distance">1,2 km</div></div>
+                <h5>JOY Climatização</h5>
+                <p>Climatização e refrigeração</p>
+                <div class="recommend">♥ 238 pessoas recomendam</div>
+                <div class="tagline"><span>12 indicações recentes</span><span>Perfil verificado</span></div>
+                <div class="view">VER INDICAÇÃO</div>
+              </div>
+
+              <div class="rec-card">
+                <div class="rec-row"><div class="rec-icon">⚡</div><div class="distance">3,2 km</div></div>
+                <h5>Marcos Silva</h5>
+                <p>Eletricista residencial</p>
+                <div class="recommend">♥ 54 pessoas recomendam</div>
+                <div class="tagline"><span>Atende sua região</span><span>Contato direto</span></div>
+                <div class="view">VER PERFIL</div>
+              </div>
+            </div>
+          </div>
+          <div class="float-card two"><strong>Muito recomendado 🔥</strong><span>em alta na sua região</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="proof-strip">
+      <div class="container proof-grid">
+        <div class="proof"><strong>Proximidade</strong><span>resultados relevantes perto do usuário</span></div>
+        <div class="proof"><strong>Recomendação</strong><span>confiança construída pela comunidade</span></div>
+        <div class="proof"><strong>Classificados</strong><span>ofertas e oportunidades locais</span></div>
+        <div class="proof"><strong>Gestão</strong><span>moderação, métricas e evolução</span></div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container problem-wrap">
+        <div class="section-head reveal">
+          <span class="eyebrow">O desafio</span>
+          <h2>Quando alguém precisa de um serviço, quase sempre pergunta: <span class="accent">“quem você indica?”</span></h2>
+          <p class="lead">O IndicaPro transforma esse comportamento natural em uma comunidade organizada, pesquisável e baseada em localização.</p>
+        </div>
+        <div class="reveal">
+          <div class="quote-block">
+            <p>“Não quero apenas encontrar alguém. Quero encontrar alguém que outras pessoas realmente recomendam.”</p>
+            <small>Essa é a experiência central do IndicaPro.</small>
+          </div>
+          <div class="feature-list" style="margin-top:18px">
+            <div class="feature-row"><div class="check">✓</div><div><strong>Descoberta por proximidade</strong><span>Profissionais, empresas, serviços e classificados dentro de um raio relevante.</span></div></div>
+            <div class="feature-row"><div class="check">✓</div><div><strong>Recomendação acima da simples nota</strong><span>Quantidade, qualidade e histórico das indicações ajudam a criar confiança.</span></div></div>
+            <div class="feature-row"><div class="check">✓</div><div><strong>Comunidade autenticada</strong><span>Somente usuários cadastrados publicam indicações, relatos e classificados.</span></div></div>
+            <div class="feature-row"><div class="check">✓</div><div><strong>Crescimento orgânico</strong><span>É possível indicar profissionais e empresas que ainda nem possuem conta na plataforma.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="escopo">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Escopo proposto</span>
+          <h2>O IndicaPro, <span class="accent">de ponta a ponta.</span></h2>
+          <p class="lead">Uma primeira versão gratuita, robusta e pronta para formar comunidade — com arquitetura preparada para recursos premium e novos modelos de negócio no futuro.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card reveal"><div class="card-num">01 · PERFIL</div><div class="icon">👤</div><h3>Conta & reputação</h3><p>Perfil do usuário, histórico de participação, indicações realizadas e sinais de confiança da comunidade.</p></div>
+          <div class="card reveal"><div class="card-num">02 · DESCOBERTA</div><div class="icon">📍</div><h3>Perto de você</h3><p>Feed e busca com proximidade, categorias, relevância e volume de recomendações.</p></div>
+          <div class="card reveal"><div class="card-num">03 · INDICAÇÕES</div><div class="icon">♥</div><h3>Eu recomendo</h3><p>Usuários podem recomendar profissionais, empresas e serviços e explicar por que confiam neles.</p></div>
+          <div class="card reveal"><div class="card-num">04 · PERFIS LOCAIS</div><div class="icon">🏪</div><h3>Empresas & profissionais</h3><p>Páginas com categoria, região, contato, descrição, fotos e total de recomendações recebidas.</p></div>
+          <div class="card reveal"><div class="card-num">05 · REIVINDICAÇÃO</div><div class="icon">✓</div><h3>Este perfil é meu</h3><p>Um profissional indicado por terceiros pode criar conta e solicitar a gestão do próprio perfil.</p></div>
+          <div class="card reveal"><div class="card-num">06 · CLASSIFICADOS</div><div class="icon">🏷️</div><h3>Anuncie localmente</h3><p>Produtos, serviços e oportunidades publicados por usuários autenticados com fotos, preço e localização.</p></div>
+          <div class="card reveal"><div class="card-num">07 · INTERAÇÃO</div><div class="icon">💬</div><h3>Relatos & utilidade</h3><p>Comentários sobre a indicação, favoritos, compartilhamento e sinalização de conteúdo útil.</p></div>
+          <div class="card reveal"><div class="card-num">08 · ALERTAS</div><div class="icon">🔔</div><h3>Notificações</h3><p>OneSignal para atividade de perfis, classificados, interações e novidades relevantes da região.</p></div>
+          <div class="card reveal"><div class="card-num">09 · ADMIN</div><div class="icon">⚙</div><h3>Painel administrativo</h3><p>Usuários, categorias, perfis, reivindicações, denúncias, moderação, métricas e gestão da comunidade.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Jornada</span>
+          <h2>Do “você conhece alguém?” ao <span class="accent">contato confiável.</span></h2>
+          <p class="lead">A experiência deve ser simples para quem busca e rápida para quem contribui com a comunidade.</p>
+        </div>
+        <div class="flow">
+          <div class="step reveal"><h3>Cria a conta</h3><p>Entra gratuitamente e define sua localização ou região de interesse.</p></div>
+          <div class="step reveal"><h3>Busca ou descobre</h3><p>Encontra opções próximas, mais recomendadas ou relevantes para o que precisa.</p></div>
+          <div class="step reveal"><h3>Confere a reputação</h3><p>Vê recomendações, relatos, atividade e informações daquele profissional ou empresa.</p></div>
+          <div class="step reveal"><h3>Entra em contato</h3><p>Fala diretamente com o indicado e depois também pode contribuir recomendando.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">O diferencial</span>
+          <h2>Mais do que estrelas: <span class="accent">confiança acumulada.</span></h2>
+          <p class="lead">O IndicaPro pode usar um ranking próprio para equilibrar proximidade, número de recomendações, atividade recente e qualidade da participação na comunidade.</p>
+        </div>
+        <div class="reputation">
+          <div class="score-card reveal">
+            <span class="eyebrow">Exemplo de reputação</span>
+            <div class="big-number">238</div>
+            <div class="label">pessoas recomendam este negócio</div>
+            <p style="margin:22px 0 0;color:var(--muted);max-width:620px">O destaque principal não precisa ser uma nota genérica. O produto pode valorizar quantas pessoas recomendam, quem recomenda, quando recomendou e se a indicação foi útil para outros usuários.</p>
+          </div>
+          <div class="mini-stack reveal">
+            <div class="mini"><strong>Proximidade inteligente</strong><span>Nem sempre o resultado mais perto é o melhor. O ranking pode equilibrar distância e confiança.</span></div>
+            <div class="mini"><strong>Histórico do indicador</strong><span>Perfis ativos e com boas contribuições podem ter sinais de reputação mais fortes.</span></div>
+            <div class="mini"><strong>Recência</strong><span>Indicações recentes ajudam a manter resultados locais atualizados.</span></div>
+            <div class="mini"><strong>Antiabuso</strong><span>Regras, denúncias e moderação reduzem autopromoção indevida, spam e manipulação.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="arquitetura">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Arquitetura</span>
+          <h2>Tecnologia moderna, <span class="accent">com produto independente.</span></h2>
+          <p class="lead">A BigCorps propõe uma infraestrutura própria para o IndicaPro, separada de outros produtos, mas aproveitando padrões e tecnologias que já usamos em produção.</p>
+        </div>
+
+        <div class="architecture">
+          <div class="arch-stack reveal">
+            <div class="tech"><b>Aplicativo</b><span>React Native + Expo · Android</span></div>
+            <div class="tech"><b>Painel web</b><span>Next.js · Vercel</span></div>
+            <div class="tech"><b>Backend & banco</b><span>Supabase · PostgreSQL</span></div>
+            <div class="tech"><b>Busca por proximidade</b><span>PostGIS · índices geoespaciais</span></div>
+            <div class="tech"><b>Tempo real</b><span>Supabase Realtime</span></div>
+            <div class="tech"><b>Notificações</b><span>OneSignal</span></div>
+            <div class="tech"><b>Mapas & endereços</b><span>Google Maps Platform</span></div>
+            <div class="tech"><b>Fotos & arquivos</b><span>Storage com controle de acesso</span></div>
+            <div class="tech"><b>Segurança</b><span>RLS, autenticação, moderação e LGPD</span></div>
+          </div>
+
+          <div class="arch-visual card reveal">
+            <div class="node-row">
+              <div class="node">Android<small>app da comunidade</small></div>
+              <div class="node">Painel Web<small>gestão JOY</small></div>
+              <div class="node">Web público<small>evolução futura</small></div>
+            </div>
+            <div class="connector">↓</div>
+            <div class="node core">SUPABASE DEDICADO AO INDICAPRO<small>Auth · PostgreSQL · PostGIS · Realtime · Storage · Edge Functions</small></div>
+            <div class="connector">↓</div>
+            <div class="node-row">
+              <div class="node">Google Maps<small>mapa & lugares</small></div>
+              <div class="node">OneSignal<small>push</small></div>
+              <div class="node">Vercel<small>web & admin</small></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card reveal" style="margin-top:20px;padding:28px">
+          <div class="card-num">DECISÃO DE ARQUITETURA</div>
+          <h3>O IndicaPro nasce como produto independente da JOY.</h3>
+          <p>Banco, autenticação, arquivos, funções e dados ficam em um projeto próprio do IndicaPro. A JOY mantém a propriedade do produto e dos dados da plataforma, enquanto a BigCorps atua como parceira responsável pela engenharia, desenvolvimento e evolução tecnológica.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="bigcorps">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Parceria</span>
+          <h2>A JOY teve a visão. <span class="accent">A BigCorps tem a tecnologia para transformá-la em produto.</span></h2>
+          <p class="lead">O IndicaPro exige mobile, localização, reputação, banco em nuvem, notificações, administração e segurança — competências já aplicadas pela BigCorps em produtos reais.</p>
+        </div>
+
+        <div class="why-grid">
+          <div class="big-card reveal">
+            <span class="eyebrow">Engenharia de produto</span>
+            <h2 style="font-size:clamp(34px,4vw,52px)">Da ideia à plataforma em produção.</h2>
+            <p>Desenvolvemos aplicações web, aplicativos, inteligência artificial, automações, integrações, pagamentos e produtos com operação contínua. Para o IndicaPro, a BigCorps pode conduzir arquitetura, experiência, desenvolvimento, testes, publicação e evolução.</p>
+            <div class="hero-actions" style="margin:26px 0 0">
+              <a class="btn primary" href="https://www.bigcorps.com.br/" target="_blank" rel="noopener">Conhecer a BigCorps ↗</a>
+              <a class="btn ghost" href="https://www.bigcorps.com.br/solucoes/" target="_blank" rel="noopener">Todas as soluções ↗</a>
+            </div>
+          </div>
+
+          <div class="mini-stack reveal">
+            <div class="mini"><strong>Infraestrutura organizada</strong><span>Ambiente dedicado, versionamento e componentes preparados para evolução.</span></div>
+            <div class="mini"><strong>Produto, não apenas telas</strong><span>Fluxos, regras, segurança, administração e operação pensados como uma plataforma completa.</span></div>
+            <div class="mini"><strong>Integrações maduras</strong><span>Google, notificações, pagamentos, APIs externas e serviços em nuvem fazem parte da nossa rotina.</span></div>
+            <div class="mini"><strong>Evolução contínua</strong><span>A base permite adicionar iOS, recursos premium, IA e monetização sem reconstruir o produto.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="cases">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Soluções BigCorps</span>
+          <h2>Produtos que demonstram <span class="accent">nossa capacidade.</span></h2>
+          <p class="lead">Conheça algumas soluções já desenvolvidas e operadas pela BigCorps.</p>
+        </div>
+
+        <div class="case-grid">
+          <a class="case reveal" href="https://www.bigcorps.com.br/solucoes/minhai" target="_blank" rel="noopener">
+            <div><div class="case-tag">IA · Integrações · SaaS</div><h3>minhAi</h3><p>Assistente virtual com voz e texto, canais digitais, integrações Google e Meta e automação de processos.</p></div><span class="case-link">Ver solução</span>
+          </a>
+          <a class="case reveal" href="https://www.bigcorps.com.br/solucoes/monitoria" target="_blank" rel="noopener">
+            <div><div class="case-tag">Tempo real · IA · Monitoramento</div><h3>MonitorIA</h3><p>Plataforma que transforma câmeras existentes em uma memória visual pesquisável e organizada por acontecimentos.</p></div><span class="case-link">Ver solução</span>
+          </a>
+          <a class="case reveal" href="https://www.bigcorps.com.br/solucoes/srrotas" target="_blank" rel="noopener">
+            <div><div class="case-tag">Android · Mobilidade · Dados</div><h3>Sr. Rotas</h3><p>Copiloto para motoristas de aplicativo com análise em tempo real, histórico de jornada e experiência móvel.</p></div><span class="case-link">Ver solução</span>
+          </a>
+          <a class="case reveal" href="https://www.bigcorps.com.br/solucoes/conviteia" target="_blank" rel="noopener">
+            <div><div class="case-tag">WebApp · Google · Eventos</div><h3>Convite IA</h3><p>Plataforma de convites digitais com publicação, confirmações, experiências interativas e recursos para eventos.</p></div><span class="case-link">Ver solução</span>
+          </a>
+          <a class="case reveal" href="https://www.bigcorps.com.br/solucoes/artefinal" target="_blank" rel="noopener">
+            <div><div class="case-tag">SaaS · Arquivos · Automação</div><h3>ArteFinal</h3><p>Ferramentas inteligentes para preparação, conversão e fechamento de arquivos para produção gráfica.</p></div><span class="case-link">Ver solução</span>
+          </a>
+          <a class="case reveal" href="https://www.bigcorps.com.br/solucoes/pixwiki" target="_blank" rel="noopener">
+            <div><div class="case-tag">Pagamentos · PIX · Automação</div><h3>Pix Wiki</h3><p>Links de cobrança Pix personalizados com confirmação automática e experiência simples para empresas e clientes.</p></div><span class="case-link">Ver solução</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Construção</span>
+          <h2>Um projeto dividido em <span class="accent">entregas claras.</span></h2>
+          <p class="lead">A execução pode ser organizada em fases para validar experiência, regras de reputação e arquitetura antes de avançar cada camada.</p>
+        </div>
+
+        <div class="phases">
+          <div class="phase reveal"><div class="n">FASE 01</div><h3>Produto & UX</h3><ul><li>Fluxos completos</li><li>Regras de indicação</li><li>Identidade e telas</li><li>Protótipo navegável</li></ul></div>
+          <div class="phase reveal"><div class="n">FASE 02</div><h3>Base técnica</h3><ul><li>Supabase dedicado</li><li>Banco e permissões</li><li>Geolocalização</li><li>Painel administrativo</li></ul></div>
+          <div class="phase reveal"><div class="n">FASE 03</div><h3>App Android</h3><ul><li>Perfis e recomendações</li><li>Feed e busca</li><li>Classificados</li><li>OneSignal</li></ul></div>
+          <div class="phase reveal"><div class="n">FASE 04</div><h3>Validação & publicação</h3><ul><li>Testes integrados</li><li>Moderação e segurança</li><li>Políticas e LGPD</li><li>Publicação Android</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Pronto para evoluir</span>
+          <h2>Gratuito para formar comunidade. <span class="accent">Preparado para monetizar depois.</span></h2>
+          <p class="lead">A primeira versão não depende de cobrança. Mas a arquitetura já pode prever permissões e planos futuros sem alterar o núcleo do produto.</p>
+        </div>
+
+        <div class="grid-4">
+          <div class="card reveal"><div class="icon"></div><h3>iOS</h3><p>Adicionar a versão para iPhone aproveitando a base móvel compartilhada.</p></div>
+          <div class="card reveal"><div class="icon">✨</div><h3>Recomendação inteligente</h3><p>IA e comportamento para sugerir serviços e perfis mais relevantes para cada usuário.</p></div>
+          <div class="card reveal"><div class="icon">💎</div><h3>IndicaPro Premium</h3><p>Perfis avançados, métricas, mais recursos comerciais, destaque e ferramentas para empresas.</p></div>
+          <div class="card reveal"><div class="icon">📣</div><h3>Impulsionamento</h3><p>Classificados e perfis patrocinados com regras claras para não comprometer a confiança da comunidade.</p></div>
+          <div class="card reveal"><div class="icon">🎯</div><h3>Leads & métricas</h3><p>Visualizações, contatos gerados e indicadores para negócios que desejarem uma experiência profissional.</p></div>
+          <div class="card reveal"><div class="icon">🏅</div><h3>Badges & níveis</h3><p>Gamificação para reconhecer usuários que fazem contribuições úteis e confiáveis.</p></div>
+          <div class="card reveal"><div class="icon">🔗</div><h3>QR Code de indicação</h3><p>Perfis e empresas podem compartilhar sua presença no IndicaPro em ambientes físicos e digitais.</p></div>
+          <div class="card reveal"><div class="icon">💳</div><h3>Novos modelos</h3><p>Planos, benefícios, campanhas ou programas de incentivo podem ser adicionados quando fizer sentido.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="container">
+        <div class="cta-box reveal">
+          <span class="eyebrow">JOY + BigCorps</span>
+          <h2>Uma boa indicação pode começar uma relação. <span class="accent">O IndicaPro pode organizar milhares delas.</span></h2>
+          <p>A JOY idealizou uma plataforma com potencial para transformar recomendações informais em uma comunidade local confiável. A BigCorps está preparada para construir essa visão com tecnologia própria, arquitetura escalável e foco em produto.</p>
+          <div class="cta-actions">
+            <a class="btn primary" href="https://wa.me/5511926828418?text=Ol%C3%A1%2C%20quero%20conversar%20sobre%20o%20projeto%20IndicaPro." target="_blank" rel="noopener">Conversar no WhatsApp ↗</a>
+            <a class="btn ghost" href="mailto:contato@bigcorps.com.br?subject=Projeto%20IndicaPro">contato@bigcorps.com.br</a>
+            <a class="btn ghost" href="https://www.bigcorps.com.br/" target="_blank" rel="noopener">bigcorps.com.br ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>© 2026 BigCorps Tecnologia · Proposta técnica para o projeto IndicaPro, uma ideia da JOY.</div>
+      <div class="footer-links">
+        <a href="https://www.bigcorps.com.br/" target="_blank" rel="noopener">BigCorps</a>
+        <a href="https://www.bigcorps.com.br/solucoes/" target="_blank" rel="noopener">Soluções</a>
+        <a href="https://www.bigcorps.com.br/contato/" target="_blank" rel="noopener">Contato</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const reveal = () => {
+      const els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(el => el.classList.add('show'));
+        return;
+      }
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08 });
+      els.forEach(el => observer.observe(el));
+    };
+    document.addEventListener('DOMContentLoaded', reveal);
+  </script>
+</body>
+</html>
