@@ -85,12 +85,12 @@
 
     /* HEADER */
     .header{position:sticky; top:0; z-index:50; backdrop-filter:blur(14px); background:rgba(243,239,232,.78); border-bottom:1px solid rgba(16,28,45,.08)}
-    .header-inner{display:flex; align-items:center; justify-content:space-between; gap:20px; min-height:82px}
-    .brand-lockup{display:flex; align-items:center; gap:16px}
-    .brand-mark{width:68px; height:78px; flex:0 0 auto}
-    .brand-name{font-family:"Cormorant Garamond", Georgia, serif; font-size:31px; line-height:.92; letter-spacing:.04em; text-transform:uppercase}
-    .brand-role{margin-top:7px; color:var(--gold); font-size:10px; font-weight:800; letter-spacing:.30em; text-transform:uppercase}
-    .brand-tagline{margin-top:6px; font-family:"Cormorant Garamond", Georgia, serif; font-size:14px; font-style:italic; letter-spacing:.10em; color:#4e5258}
+    .header-inner{display:flex; align-items:center; justify-content:space-between; gap:20px; min-height:72px}
+    .brand-lockup{display:flex; align-items:center; gap:14px}
+    .brand-mark{width:62px; height:70px; flex:0 0 auto}
+    .brand-name{font-family:"Cormorant Garamond", Georgia, serif; font-size:30px; line-height:.88; letter-spacing:.04em; text-transform:uppercase}
+    .brand-role{margin-top:2px; color:var(--gold); font-size:10px; line-height:1.05; font-weight:800; letter-spacing:.30em; text-transform:uppercase}
+    .brand-tagline{margin-top:2px; font-family:"Cormorant Garamond", Georgia, serif; font-size:14px; line-height:1.1; font-style:italic; letter-spacing:.08em; color:#4e5258}
     .header-note{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#7d766d}
 
     /* HERO */
@@ -112,7 +112,7 @@
     /* VISUAL PREVIEW */
     .site-stage{position:relative; min-height:660px; display:grid; place-items:center}
     .site-glow{position:absolute; width:520px; height:520px; border-radius:50%; background:radial-gradient(circle, rgba(170,141,104,.18), transparent 66%)}
-    .browser{position:relative; width:min(600px,100%); padding:11px; border-radius:28px; background:#132033; border:1px solid rgba(255,255,255,.12); box-shadow:0 40px 95px rgba(33,24,17,.18); transform:rotate(1.3deg)}
+    .browser{position:relative; z-index:2; width:min(600px,100%); padding:11px; border-radius:28px; background:#132033; border:1px solid rgba(255,255,255,.12); box-shadow:0 40px 95px rgba(33,24,17,.18); transform:rotate(1.3deg)}
     .browser-bar{height:34px; display:flex; align-items:center; gap:6px; padding:0 12px}
     .dot{width:8px; height:8px; border-radius:50%; background:#6f7e92}
     .dot:nth-child(2){opacity:.7}.dot:nth-child(3){opacity:.45}
@@ -137,7 +137,7 @@
     .mock-card i{display:block; width:18px; height:1px; background:var(--gold); margin-bottom:11px}
     .mock-card b{display:block; font-family:"Cormorant Garamond", Georgia, serif; font-size:13px; margin-bottom:4px}
     .mock-card span{font-size:6px; color:#817970}
-    .mobile-preview{position:absolute; right:-10px; bottom:18px; width:160px; padding:7px; border-radius:29px; background:#101820; box-shadow:0 26px 60px rgba(16,28,45,.20); transform:rotate(-4deg)}
+    .mobile-preview{position:absolute; z-index:4; right:-10px; bottom:18px; width:160px; padding:7px; border-radius:29px; background:#101820; box-shadow:0 26px 60px rgba(16,28,45,.20); transform:rotate(-4deg)}
     .mobile-screen{min-height:316px; border-radius:23px; overflow:hidden; background:var(--paper-3)}
     .mobile-top{display:flex; justify-content:space-between; align-items:center; padding:14px 12px 10px}
     .mobile-top svg{width:29px; height:33px}
@@ -147,7 +147,7 @@
     .mobile-copy p{font-size:7px; color:#756e67}
     .mobile-block{height:118px; margin:0 10px 10px; border-radius:15px; background:linear-gradient(145deg,#b99d77,#816950); position:relative; overflow:hidden}
     .mobile-block::after{content:"JB"; position:absolute; right:6px; bottom:-18px; font-family:"Cormorant Garamond", Georgia, serif; font-size:70px; color:rgba(255,255,255,.16)}
-    .floating-tag{position:absolute; left:-18px; top:110px; padding:12px 15px; border-radius:14px; background:rgba(255,252,247,.88); border:1px solid var(--line-gold); box-shadow:0 18px 44px rgba(42,33,24,.10); font-size:10px; color:#675945}
+    .floating-tag{position:absolute; z-index:12; left:-18px; top:110px; padding:12px 15px; border-radius:14px; background:rgba(255,252,247,.88); border:1px solid var(--line-gold); box-shadow:0 18px 44px rgba(42,33,24,.10); font-size:10px; color:#675945}
     .floating-tag strong{display:block; font-size:11px; color:var(--ink)}
 
     .proof-strip{background:rgba(255,252,247,.52); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
@@ -239,7 +239,7 @@
     }
 
     @media(max-width:900px){
-      .header-inner{min-height:74px}
+      .header-inner{min-height:66px}
       .header-note{display:none}
       .proof-grid,.grid-3,.flow,.service-showcase{grid-template-columns:repeat(2,1fr)}
       .proof:nth-child(2){border-right:0}
@@ -249,17 +249,17 @@
       .mock-hero{grid-template-columns:1fr}
       .mock-visual{min-height:180px}
       .mobile-preview{position:relative; right:auto; bottom:auto; width:min(240px,68%); margin:18px auto 0; transform:none}
-      .floating-tag{left:10px; top:auto; bottom:-14px}
+      .floating-tag{left:8px; top:auto; bottom:8px; z-index:12}
     }
 
     @media(max-width:640px){
       .container{width:min(100% - 24px, var(--max))}
       .section{padding:76px 0}
       h1{font-size:50px}
-      .brand-mark{width:56px; height:64px}
-      .brand-name{font-size:24px}
-      .brand-role{font-size:9px; letter-spacing:.25em}
-      .brand-tagline{font-size:12px; letter-spacing:.06em}
+      .brand-mark{width:52px; height:58px}
+      .brand-name{font-size:23px}
+      .brand-role{font-size:9px; line-height:1; letter-spacing:.25em}
+      .brand-tagline{font-size:11.5px; line-height:1.05; letter-spacing:.05em}
       .hero{padding:30px 0 72px}
       .hero-copy{font-size:16px}
       .site-stage{padding-bottom:8px}
@@ -324,7 +324,6 @@
     <section class="hero" id="inicio">
       <div class="container hero-grid">
         <div class="reveal">
-          <div class="hero-kicker"><span class="pulse"></span> Visão inicial de presença digital</div>
           <h1>Um site à altura dos <span class="accent">momentos que você conduz.</span></h1>
           <p class="hero-copy">A proposta é transformar a elegância da sua marca em uma presença digital premium, acolhedora e clara — uma página que apresente seu trabalho como celebrante de casamentos e mestre de cerimônias para debutantes, transmita confiança desde o primeiro acesso e torne o contato natural para quem está planejando um momento importante.</p>
           <div class="hero-actions">
