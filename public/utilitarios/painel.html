@@ -158,7 +158,7 @@
       </div>
 
       <div class="actions">
-        <label class="file-btn" title="Selecione até 66 fotos; o sistema separa automaticamente retratos e paisagens">
+        <label class="file-btn" title="Selecione até 66 fotos; você pode manter a ordem enviada ou usar a organização automática por formato">
           Carregar 66 fotos
           <input id="surroundInput" type="file" accept="image/*" multiple>
         </label>
@@ -167,6 +167,14 @@
           Foto principal
           <input id="centerInput" type="file" accept="image/*">
         </label>
+
+        <div class="quality">
+          Organização:
+          <select id="arrangeMode" title="Define como as fotos serão posicionadas">
+            <option value="ordered" selected>Respeitar ordem enviada</option>
+            <option value="auto">Automática por formato</option>
+          </select>
+        </div>
 
         <div class="quality">
           PDF:
@@ -192,7 +200,7 @@
     <aside class="side">
       <div class="side-head">
         <h2>Ajuste do painel</h2>
-        <p>As fotos originais não são alteradas. O editor identifica fotos em pé e deitadas e distribui cada uma no espaço mais adequado para reduzir cortes.</p>
+        <p>As fotos originais não são alteradas. Você pode escolher entre respeitar a ordem exata enviada ou usar a organização automática por formato para tentar reduzir cortes.</p>
       </div>
 
       <div class="side-body">
@@ -219,7 +227,7 @@
         <div class="section">
           <div class="section-title">Como ajustar</div>
           <div class="hint">
-            O carregamento distribui automaticamente fotos <b>em pé</b> e <b>deitadas</b> nos formatos mais compatíveis. Depois, clique em uma foto e <b>arraste</b> para ajustar o enquadramento. Use o <b>zoom</b> se necessário. Duplo clique centraliza novamente.
+            Escolha no topo entre <b>Respeitar ordem enviada</b> ou <b>Automática por formato</b>. Depois, clique em uma foto e <b>arraste</b> para ajustar o enquadramento. Use o <b>zoom</b> se necessário. Duplo clique centraliza novamente.
           </div>
         </div>
 
@@ -267,6 +275,7 @@
   const resetBtn = document.getElementById('resetBtn');
   const replaceBtn = document.getElementById('replaceBtn');
   const exportBtn = document.getElementById('exportBtn');
+  const arrangeMode = document.getElementById('arrangeMode');
   const clearBtn = document.getElementById('clearBtn');
   const shuffleBtn = document.getElementById('shuffleBtn');
   const dpiSelect = document.getElementById('dpiSelect');
@@ -555,7 +564,7 @@
     return st.rect.w / st.rect.h;
   }
 
-  function matchImagesToSlots(items, slots){
+  function matchImagesToSlotsAuto(items, slots){
     // Menor distância de proporção = menos corte.
     // log() trata vertical e horizontal de forma simétrica.
     const available = [...slots];
@@ -603,6 +612,17 @@
     return matches;
   }
 
+  function matchImagesToSlotsOrdered(items, slots){
+    // Mantém rigorosamente a ordem recebida:
+    // primeira foto no primeiro slot, segunda no segundo, etc.
+    const matches = [];
+    const limit = Math.min(items.length, slots.length);
+    for(let i=0;i<limit;i++){
+      matches.push({item:items[i], state:slots[i]});
+    }
+    return matches;
+  }
+
   async function loadSurroundFiles(fileList){
     const files=[...fileList]
       .filter(f=>f.type.startsWith('image/'))
@@ -636,7 +656,10 @@
       exportStatus.textContent=`Analisando ${i+1} de ${files.length} fotos...`;
     }
 
-    const matches=matchImagesToSlots(inspected,surrounding);
+    const mode = arrangeMode?.value || 'ordered';
+    const matches = mode === 'auto'
+      ? matchImagesToSlotsAuto(inspected, surrounding)
+      : matchImagesToSlotsOrdered(inspected, surrounding);
 
     for(const {item,state} of matches){
       state.file=item.file;
@@ -654,10 +677,14 @@
       if(!usedUrls.has(item.url)) URL.revokeObjectURL(item.url);
     });
 
-    exportStatus.textContent=
-      files.length === 66
-        ? 'Fotos distribuídas automaticamente por orientação.'
-        : `${matches.length} foto(s) distribuída(s) por orientação.`;
+    exportStatus.textContent =
+      mode === 'auto'
+        ? (files.length === 66
+            ? 'Fotos distribuídas automaticamente por formato.'
+            : `${matches.length} foto(s) distribuída(s) automaticamente por formato.`)
+        : (files.length === 66
+            ? 'Fotos posicionadas na ordem enviada.'
+            : `${matches.length} foto(s) posicionada(s) na ordem enviada.`);
 
     updateCounts();
   }
