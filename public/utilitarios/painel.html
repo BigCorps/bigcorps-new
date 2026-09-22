@@ -158,7 +158,7 @@
       </div>
 
       <div class="actions">
-        <label class="file-btn" title="Selecione exatamente 66 fotos para o mosaico">
+        <label class="file-btn" title="Selecione até 66 fotos; o sistema separa automaticamente retratos e paisagens">
           Carregar 66 fotos
           <input id="surroundInput" type="file" accept="image/*" multiple>
         </label>
@@ -192,7 +192,7 @@
     <aside class="side">
       <div class="side-head">
         <h2>Ajuste do painel</h2>
-        <p>As fotos originais não são alteradas. O editor apenas recorta visualmente e posiciona cada imagem no painel.</p>
+        <p>As fotos originais não são alteradas. O editor identifica fotos em pé e deitadas e distribui cada uma no espaço mais adequado para reduzir cortes.</p>
       </div>
 
       <div class="side-body">
@@ -219,7 +219,7 @@
         <div class="section">
           <div class="section-title">Como ajustar</div>
           <div class="hint">
-            Clique em uma foto e <b>arraste</b> para reposicionar o enquadramento. Use o controle de <b>zoom</b> para aproximar. Duplo clique centraliza a foto novamente.
+            O carregamento distribui automaticamente fotos <b>em pé</b> e <b>deitadas</b> nos formatos mais compatíveis. Depois, clique em uma foto e <b>arraste</b> para ajustar o enquadramento. Use o <b>zoom</b> se necessário. Duplo clique centraliza novamente.
           </div>
         </div>
 
@@ -306,46 +306,90 @@
   function buildLayout(){
     const rects = [];
 
-    // área superior: de 5 cm a 79 cm
-    rects.push(...rowRects(5.7, 17.5, [13,14,13,14,13,14,13]));
-    rects.push(...rowRects(23.85, 17.5, [16,15,17,16,15,17]));
-    rects.push(...rowRects(42.0, 17.5, [12,13,12,13,12,13,12,13]));
-    rects.push(...rowRects(60.15, 17.5, [14,13,15,13,14,13,15]));
+    // Layout misto para reduzir cortes:
+    // 66 fotos ao redor = 28 acima + 10 nas laterais + 28 abaixo.
+    //
+    // As linhas alternam formatos:
+    // - 7 fotos: predominantemente em pé
+    // - 5 fotos: predominantemente deitadas
+    // - 4 fotos: deitadas maiores
+    //
+    // Assim o painel recebe praticamente a mesma quantidade de
+    // espaços verticais e horizontais, mantendo o mosaico fechado.
 
-    // faixa central: foto principal 30x40; espaço excedente foi deslocado para o final do painel
-    // 5 fotos por lado, com leve variação de dimensões.
-    const sideGap = .65;
-    const leftX = 1.2;
-    const sideW = 32.8;
-    const colGap = .65;
-    const col1 = 15.1;
-    const col2 = sideW - col1 - colGap;
-    const bandY = 78.3;
-    const bandH = 40.4;
+    // ACIMA DA FOTO PRINCIPAL — 28 fotos
+    rects.push(...rowRects(5.70, 15.0, [1,1,1,1,1,1,1])); // 7 em pé
+    rects.push(...rowRects(21.35, 12.5, [1,1,1,1,1]));    // 5 deitadas
+    rects.push(...rowRects(34.50, 14.0, [1,1,1,1]));      // 4 deitadas maiores
+    rects.push(...rowRects(49.15, 12.5, [1,1,1,1,1]));    // 5 deitadas
+    rects.push(...rowRects(62.30, 15.0, [1,1,1,1,1,1,1]));// 7 em pé
 
-    // esquerda: 3 na primeira coluna, 2 na segunda
-    const lh3 = (bandH - sideGap*2)/3;
-    for(let i=0;i<3;i++) rects.push(cmRect(leftX, bandY+i*(lh3+sideGap), col1, lh3));
-    const lh2 = (bandH - sideGap)/2;
-    for(let i=0;i<2;i++) rects.push(cmRect(leftX+col1+colGap, bandY+i*(lh2+sideGap), col2, lh2));
+    // FAIXA CENTRAL — 10 fotos laterais + principal 30 x 40 cm.
+    // Em cada lateral: uma coluna estreita com 2 retratos e
+    // uma coluna mais larga com 3 paisagens (espelhadas à direita).
+    const bandY = 78.0;
+    const bandH = 40.0;
+    const sideX = 1.2;
+    const sideW = 33.15;
+    const innerGap = .65;
 
-    // direita, espelhado
+    const portraitW = 14.55;
+    const landscapeW = sideW - portraitW - innerGap;
+
+    const portraitH = (bandH - innerGap) / 2;
+    const landscapeH = (bandH - innerGap * 2) / 3;
+
+    // esquerda: 2 verticais + 3 horizontais
+    for(let i=0;i<2;i++){
+      rects.push(cmRect(
+        sideX,
+        bandY + i * (portraitH + innerGap),
+        portraitW,
+        portraitH
+      ));
+    }
+    for(let i=0;i<3;i++){
+      rects.push(cmRect(
+        sideX + portraitW + innerGap,
+        bandY + i * (landscapeH + innerGap),
+        landscapeW,
+        landscapeH
+      ));
+    }
+
+    // direita: espelhado — 3 horizontais + 2 verticais
     const rightX = PANEL_W_CM - 1.2 - sideW;
-    for(let i=0;i<2;i++) rects.push(cmRect(rightX, bandY+i*(lh2+sideGap), col2, lh2));
-    for(let i=0;i<3;i++) rects.push(cmRect(rightX+col2+colGap, bandY+i*(lh3+sideGap), col1, lh3));
+    for(let i=0;i<3;i++){
+      rects.push(cmRect(
+        rightX,
+        bandY + i * (landscapeH + innerGap),
+        landscapeW,
+        landscapeH
+      ));
+    }
+    for(let i=0;i<2;i++){
+      rects.push(cmRect(
+        rightX + landscapeW + innerGap,
+        bandY + i * (portraitH + innerGap),
+        portraitW,
+        portraitH
+      ));
+    }
 
-    // área inferior: deslocada 1,5 cm para cima; o espaço excedente fica no rodapé
-    rects.push(...rowRects(119.5, 18.6, [14,13,15,13,14,13,15]));
-    rects.push(...rowRects(138.75, 18.6, [12,13,12,13,12,13,12,13]));
-    rects.push(...rowRects(158.0, 18.6, [16,15,17,16,15,17]));
-    rects.push(...rowRects(177.25, 19.0, [13,14,13,14,13,14,13]));
+    // ABAIXO DA FOTO PRINCIPAL — 28 fotos.
+    // O pequeno espaço excedente fica no rodapé, não antes da principal.
+    rects.push(...rowRects(118.65, 15.5, [1,1,1,1,1,1,1])); // 7 em pé
+    rects.push(...rowRects(134.80, 13.5, [1,1,1,1,1]));     // 5 deitadas
+    rects.push(...rowRects(148.95, 15.0, [1,1,1,1]));       // 4 deitadas maiores
+    rects.push(...rowRects(164.60, 13.5, [1,1,1,1,1]));     // 5 deitadas
+    rects.push(...rowRects(178.75, 17.5, [1,1,1,1,1,1,1])); // 7 em pé
 
     if(rects.length !== 66) console.warn('Layout gerou', rects.length, 'slots; esperado: 66.');
     rects.forEach((r,i)=>r.index=i+1);
 
     const center = cmRect(
       (PANEL_W_CM-CENTER_W_CM)/2,
-      78.5,
+      78.0,
       CENTER_W_CM,
       CENTER_H_CM,
       'center'
@@ -484,12 +528,137 @@
     renderState(st);
   }
 
-  async function loadSurroundFiles(fileList){
-    const files=[...fileList].filter(f=>f.type.startsWith('image/')).slice(0,66);
-    const surrounding=states.filter(s=>s.rect.type==='surround');
-    for(let i=0;i<files.length;i++){
-      await loadFileIntoState(files[i],surrounding[i]);
+  async function inspectImageFile(file){
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+
+    try{
+      await new Promise((resolve,reject)=>{
+        img.onload=resolve;
+        img.onerror=reject;
+        img.src=url;
+      });
+
+      return {
+        file,
+        url,
+        img,
+        ratio: img.naturalWidth / img.naturalHeight
+      };
+    }catch(err){
+      URL.revokeObjectURL(url);
+      throw err;
     }
+  }
+
+  function slotRatio(st){
+    return st.rect.w / st.rect.h;
+  }
+
+  function matchImagesToSlots(items, slots){
+    // Menor distância de proporção = menos corte.
+    // log() trata vertical e horizontal de forma simétrica.
+    const available = [...slots];
+    const matches = [];
+
+    // Começamos pelas imagens de proporções mais extremas
+    // (muito horizontais ou muito verticais), pois elas têm menos
+    // opções boas e ganham mais com a escolha automática.
+    const ordered = [...items].sort((a,b)=>{
+      const da = Math.abs(Math.log(a.ratio));
+      const db = Math.abs(Math.log(b.ratio));
+      return db-da;
+    });
+
+    for(const item of ordered){
+      if(!available.length) break;
+
+      let bestIndex = 0;
+      let bestScore = Infinity;
+
+      available.forEach((st,i)=>{
+        const sr = slotRatio(st);
+        let score = Math.abs(Math.log(item.ratio / sr));
+
+        // Penalidade adicional quando as orientações são opostas.
+        const imageLandscape = item.ratio > 1.08;
+        const imagePortrait  = item.ratio < 0.92;
+        const slotLandscape  = sr > 1.08;
+        const slotPortrait   = sr < 0.92;
+
+        if((imageLandscape && slotPortrait) || (imagePortrait && slotLandscape)){
+          score += 1.4;
+        }
+
+        if(score < bestScore){
+          bestScore = score;
+          bestIndex = i;
+        }
+      });
+
+      matches.push({item, state:available[bestIndex]});
+      available.splice(bestIndex,1);
+    }
+
+    return matches;
+  }
+
+  async function loadSurroundFiles(fileList){
+    const files=[...fileList]
+      .filter(f=>f.type.startsWith('image/'))
+      .slice(0,66);
+
+    if(!files.length) return;
+
+    exportStatus.textContent='Analisando formatos das fotos...';
+
+    const surrounding=states.filter(s=>s.rect.type==='surround');
+
+    // Ao carregar um novo conjunto, limpa somente as 66 fotos externas.
+    surrounding.forEach(st=>{
+      if(st.url) URL.revokeObjectURL(st.url);
+      st.file=null;
+      st.url=null;
+      st.img=null;
+      st.dx=0;
+      st.dy=0;
+      st.zoom=1;
+      renderState(st);
+    });
+
+    const inspected=[];
+    for(let i=0;i<files.length;i++){
+      try{
+        inspected.push(await inspectImageFile(files[i]));
+      }catch(err){
+        console.warn('Não foi possível carregar', files[i]?.name, err);
+      }
+      exportStatus.textContent=`Analisando ${i+1} de ${files.length} fotos...`;
+    }
+
+    const matches=matchImagesToSlots(inspected,surrounding);
+
+    for(const {item,state} of matches){
+      state.file=item.file;
+      state.url=item.url;
+      state.img=item.img;
+      state.dx=0;
+      state.dy=0;
+      state.zoom=1;
+      renderState(state);
+    }
+
+    // Se alguma imagem analisada não foi usada, libera o object URL.
+    const usedUrls=new Set(matches.map(m=>m.item.url));
+    inspected.forEach(item=>{
+      if(!usedUrls.has(item.url)) URL.revokeObjectURL(item.url);
+    });
+
+    exportStatus.textContent=
+      files.length === 66
+        ? 'Fotos distribuídas automaticamente por orientação.'
+        : `${matches.length} foto(s) distribuída(s) por orientação.`;
+
     updateCounts();
   }
 
