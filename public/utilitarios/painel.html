@@ -312,7 +312,7 @@
     rects.push(...rowRects(42.0, 17.5, [12,13,12,13,12,13,12,13]));
     rects.push(...rowRects(60.15, 17.5, [14,13,15,13,14,13,15]));
 
-    // faixa central: foto principal 30x40 em x=35 / y=80
+    // faixa central: foto principal 30x40; espaço excedente foi deslocado para o final do painel
     // 5 fotos por lado, com leve variação de dimensões.
     const sideGap = .65;
     const leftX = 1.2;
@@ -320,7 +320,7 @@
     const colGap = .65;
     const col1 = 15.1;
     const col2 = sideW - col1 - colGap;
-    const bandY = 79.8;
+    const bandY = 78.3;
     const bandH = 40.4;
 
     // esquerda: 3 na primeira coluna, 2 na segunda
@@ -334,18 +334,18 @@
     for(let i=0;i<2;i++) rects.push(cmRect(rightX, bandY+i*(lh2+sideGap), col2, lh2));
     for(let i=0;i<3;i++) rects.push(cmRect(rightX+col2+colGap, bandY+i*(lh3+sideGap), col1, lh3));
 
-    // área inferior: 121 cm a 199 cm
-    rects.push(...rowRects(121.0, 18.6, [14,13,15,13,14,13,15]));
-    rects.push(...rowRects(140.25, 18.6, [12,13,12,13,12,13,12,13]));
-    rects.push(...rowRects(159.5, 18.6, [16,15,17,16,15,17]));
-    rects.push(...rowRects(178.75, 19.0, [13,14,13,14,13,14,13]));
+    // área inferior: deslocada 1,5 cm para cima; o espaço excedente fica no rodapé
+    rects.push(...rowRects(119.5, 18.6, [14,13,15,13,14,13,15]));
+    rects.push(...rowRects(138.75, 18.6, [12,13,12,13,12,13,12,13]));
+    rects.push(...rowRects(158.0, 18.6, [16,15,17,16,15,17]));
+    rects.push(...rowRects(177.25, 19.0, [13,14,13,14,13,14,13]));
 
     if(rects.length !== 66) console.warn('Layout gerou', rects.length, 'slots; esperado: 66.');
     rects.forEach((r,i)=>r.index=i+1);
 
     const center = cmRect(
       (PANEL_W_CM-CENTER_W_CM)/2,
-      80.0,
+      78.5,
       CENTER_W_CM,
       CENTER_H_CM,
       'center'
