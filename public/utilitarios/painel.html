@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Fotográfico 100x200 cm — BigCorps</title>
+  <meta name="description" content="Monte um painel fotográfico vertical de 100x200 cm com 66 fotos ao redor e uma foto principal central, ajustando o enquadramento e exportando em PDF." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <style>
+    :root{
+      --orange:#f97316;
+      --orange-2:#ea580c;
+      --ink:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --soft:#f8fafc;
+      --white:#fff;
+      --panel-bg:#fff;
+      --radius:14px;
+      --shadow:0 12px 36px rgba(15,23,42,.10);
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;background:#f3f4f6;color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .app{min-height:100vh;display:flex;flex-direction:column}
+    .topbar{
+      position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);
+      backdrop-filter:blur(10px);border-bottom:1px solid var(--line)
+    }
+    .topbar-inner{
+      max-width:1480px;margin:0 auto;padding:12px 18px;display:flex;gap:18px;
+      align-items:center;justify-content:space-between
+    }
+    .brand{display:flex;align-items:center;gap:10px;min-width:220px}
+    .brand-mark{
+      width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--orange),#fb923c);
+      display:grid;place-items:center;color:#fff;font-weight:800;font-family:Sora,sans-serif
+    }
+    .brand strong{font-family:Sora,sans-serif;font-size:14px}
+    .brand small{display:block;color:var(--muted);font-size:11px;margin-top:1px}
+    .actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn,.file-btn{
+      border:1px solid var(--line);background:#fff;color:#374151;padding:9px 12px;border-radius:10px;
+      font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:.15s
+    }
+    .btn:hover,.file-btn:hover{border-color:var(--orange);color:var(--orange)}
+    .btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}
+    .btn.primary:hover{background:var(--orange-2)}
+    .btn.danger{color:#b91c1c}
+    .file-btn input{display:none}
+    .quality{display:flex;align-items:center;gap:6px;color:#4b5563;font-size:12px}
+    .quality select{border:1px solid var(--line);border-radius:9px;padding:8px;background:#fff}
+
+    .workspace{
+      max-width:1480px;width:100%;margin:0 auto;padding:18px;display:grid;
+      grid-template-columns:minmax(300px,1fr) 280px;gap:18px;align-items:start
+    }
+    .stage-shell{
+      background:#e5e7eb;border-radius:18px;padding:18px;min-height:calc(100vh - 92px);
+      display:flex;align-items:flex-start;justify-content:center;overflow:auto
+    }
+
+    /* A prévia mantém exatamente a proporção 100 x 200 cm. */
+    .panel{
+      width:min(690px,78vw);aspect-ratio:1/2;background:var(--panel-bg);position:relative;
+      box-shadow:0 16px 44px rgba(15,23,42,.18);overflow:hidden;flex:0 0 auto
+    }
+    .safe-top{
+      position:absolute;left:0;right:0;top:0;height:2.5%; /* 5 cm em 200 cm */
+      border-bottom:1px dashed #9ca3af;background:linear-gradient(to bottom,#fafafa,#fff)
+    }
+    .safe-label{
+      position:absolute;right:8px;top:4px;font-size:9px;color:#6b7280;background:rgba(255,255,255,.9);padding:2px 4px;border-radius:4px
+    }
+
+    .photo-slot{
+      position:absolute;overflow:hidden;background:#eef2f7;border:1px solid rgba(255,255,255,.98);
+      box-shadow:inset 0 0 0 1px rgba(17,24,39,.05);user-select:none;touch-action:none;
+    }
+    .photo-slot canvas{width:100%;height:100%;display:block;background:#f4f4f5}
+    .photo-slot.empty canvas{opacity:.25}
+    .photo-slot.empty::before{
+      content:attr(data-index);position:absolute;inset:0;display:grid;place-items:center;
+      color:#9ca3af;font-family:Sora,sans-serif;font-size:12px;font-weight:700;pointer-events:none
+    }
+    .photo-slot.central.empty::before{content:"FOTO PRINCIPAL\A 30 × 40 cm";white-space:pre;text-align:center;font-size:13px;line-height:1.5}
+    .photo-slot.selected{outline:3px solid var(--orange);outline-offset:-3px;z-index:5}
+    .photo-slot .badge{
+      position:absolute;left:5px;top:5px;background:rgba(17,24,39,.72);color:#fff;border-radius:999px;
+      padding:2px 6px;font-size:8px;line-height:1;pointer-events:none;opacity:0;transition:.15s
+    }
+    .photo-slot:hover .badge,.photo-slot.selected .badge{opacity:1}
+    .central{box-shadow:0 0 0 2px #fff,0 7px 22px rgba(15,23,42,.18);z-index:2}
+
+    .side{
+      background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+      position:sticky;top:82px;overflow:hidden
+    }
+    .side h2{font-family:Sora,sans-serif;font-size:15px;margin:0}
+    .side p{font-size:12px;color:var(--muted);line-height:1.5;margin:6px 0 0}
+    .side-head{padding:16px;border-bottom:1px solid var(--line)}
+    .side-body{padding:14px 16px 16px;display:grid;gap:14px}
+    .stat{display:flex;justify-content:space-between;gap:8px;font-size:12px}
+    .stat span{color:var(--muted)}
+    .stat strong{font-family:Sora,sans-serif}
+    .section{border-top:1px solid var(--line);padding-top:13px}
+    .section:first-child{border-top:0;padding-top:0}
+    .section-title{font-family:Sora,sans-serif;font-size:11px;font-weight:700;margin-bottom:9px}
+    .range-row{display:grid;grid-template-columns:54px 1fr 38px;gap:8px;align-items:center;font-size:11px;color:#4b5563}
+    input[type="range"]{width:100%;accent-color:var(--orange)}
+    .hint{font-size:11px;color:#6b7280;line-height:1.45;background:#f8fafc;border-radius:10px;padding:10px}
+    .mini-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .mini-actions .btn{justify-content:center;padding:8px}
+    .progress{height:7px;background:#f1f5f9;border-radius:999px;overflow:hidden}
+    .progress > div{height:100%;width:0;background:var(--orange);transition:.2s}
+    .export-status{font-size:11px;color:#6b7280;min-height:16px}
+    .fineprint{font-size:10px;color:#9ca3af;line-height:1.45}
+
+    .drop-overlay{
+      position:fixed;inset:0;background:rgba(249,115,22,.10);border:4px dashed var(--orange);
+      z-index:100;display:none;place-items:center;pointer-events:none
+    }
+    .drop-overlay.active{display:grid}
+    .drop-overlay div{background:#fff;border-radius:18px;padding:24px 30px;box-shadow:var(--shadow);font-family:Sora,sans-serif;font-weight:700}
+
+    @media (max-width:980px){
+      .workspace{grid-template-columns:1fr}
+      .side{position:static}
+      .panel{width:min(640px,90vw)}
+      .brand{min-width:0}
+    }
+    @media (max-width:640px){
+      .topbar-inner{align-items:flex-start;flex-direction:column}
+      .actions{justify-content:flex-start}
+      .workspace{padding:10px}
+      .stage-shell{padding:10px}
+      .panel{width:94vw}
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">B</div>
+        <div>
+          <strong>Painel Fotográfico</strong>
+          <small>BigCorps • 100 × 200 cm • 67 fotos</small>
+        </div>
+      </div>
+
+      <div class="actions">
+        <label class="file-btn" title="Selecione exatamente 66 fotos para o mosaico">
+          Carregar 66 fotos
+          <input id="surroundInput" type="file" accept="image/*" multiple>
+        </label>
+
+        <label class="file-btn" title="Selecione a foto principal separadamente">
+          Foto principal
+          <input id="centerInput" type="file" accept="image/*">
+        </label>
+
+        <div class="quality">
+          PDF:
+          <select id="dpiSelect" title="Qualidade de exportação">
+            <option value="150">150 dpi</option>
+            <option value="200" selected>200 dpi</option>
+            <option value="300">300 dpi</option>
+          </select>
+        </div>
+
+        <button class="btn primary" id="exportBtn">Baixar PDF</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="stage-shell">
+      <div class="panel" id="panel">
+        <div class="safe-top"><span class="safe-label">margem superior 5 cm</span></div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="side-head">
+        <h2>Ajuste do painel</h2>
+        <p>As fotos originais não são alteradas. O editor apenas recorta visualmente e posiciona cada imagem no painel.</p>
+      </div>
+
+      <div class="side-body">
+        <div class="section">
+          <div class="stat"><span>Fotos ao redor</span><strong id="countSurround">0 / 66</strong></div>
+          <div class="stat"><span>Foto central</span><strong id="countCenter">não carregada</strong></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Foto selecionada</div>
+          <div class="stat"><span>Posição</span><strong id="selectedLabel">nenhuma</strong></div>
+          <div class="range-row">
+            <span>Zoom</span>
+            <input type="range" id="zoomRange" min="1" max="3" value="1" step="0.01" disabled>
+            <strong id="zoomValue">1.00×</strong>
+          </div>
+          <div class="mini-actions" style="margin-top:9px">
+            <button class="btn" id="resetBtn" disabled>Centralizar</button>
+            <button class="btn" id="replaceBtn" disabled>Substituir</button>
+          </div>
+          <input type="file" id="replaceInput" accept="image/*" hidden>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Como ajustar</div>
+          <div class="hint">
+            Clique em uma foto e <b>arraste</b> para reposicionar o enquadramento. Use o controle de <b>zoom</b> para aproximar. Duplo clique centraliza a foto novamente.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Exportação</div>
+          <div class="progress"><div id="progressBar"></div></div>
+          <div class="export-status" id="exportStatus"></div>
+          <div class="fineprint">
+            O PDF é criado no tamanho físico real de <b>100 × 200 cm</b>, com <b>5 cm livres no topo</b>. Para painéis grandes, 200 dpi oferece ótima qualidade com arquivo mais leve; 300 dpi gera arquivo significativamente maior.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="mini-actions">
+            <button class="btn" id="clearBtn">Limpar tudo</button>
+            <button class="btn" id="shuffleBtn">Redistribuir</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<div class="drop-overlay" id="dropOverlay"><div>Solte as fotos para carregar</div></div>
+
+<script>
+(() => {
+  'use strict';
+
+  const PANEL_W_CM = 100;
+  const PANEL_H_CM = 200;
+  const TOP_MARGIN_CM = 5;
+  const CENTER_W_CM = 30;
+  const CENTER_H_CM = 40;
+
+  const panel = document.getElementById('panel');
+  const surroundInput = document.getElementById('surroundInput');
+  const centerInput = document.getElementById('centerInput');
+  const replaceInput = document.getElementById('replaceInput');
+  const countSurround = document.getElementById('countSurround');
+  const countCenter = document.getElementById('countCenter');
+  const selectedLabel = document.getElementById('selectedLabel');
+  const zoomRange = document.getElementById('zoomRange');
+  const zoomValue = document.getElementById('zoomValue');
+  const resetBtn = document.getElementById('resetBtn');
+  const replaceBtn = document.getElementById('replaceBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  const dpiSelect = document.getElementById('dpiSelect');
+  const progressBar = document.getElementById('progressBar');
+  const exportStatus = document.getElementById('exportStatus');
+  const dropOverlay = document.getElementById('dropOverlay');
+
+  const states = [];
+  let selectedId = null;
+  let drag = null;
+
+  function cmRect(x,y,w,h,type='surround'){
+    return {x,y,w,h,type};
+  }
+
+  // 66 fotos ao redor:
+  // 28 acima (4 linhas: 7,6,8,7),
+  // 10 nas laterais da foto principal (5 de cada lado),
+  // 28 abaixo (4 linhas: 7,8,6,7).
+  // Tudo parte de medidas em centímetros para o PDF final manter o mesmo desenho.
+
+  function rowRects(y, h, widths){
+    const gap = .65;
+    const marginX = 1.2;
+    const usable = PANEL_W_CM - marginX*2 - gap*(widths.length-1);
+    const sum = widths.reduce((a,b)=>a+b,0);
+    const scale = usable/sum;
+    let x = marginX;
+    return widths.map(v => {
+      const w = v*scale;
+      const r = cmRect(x,y,w,h);
+      x += w + gap;
+      return r;
+    });
+  }
+
+  function buildLayout(){
+    const rects = [];
+
+    // área superior: de 5 cm a 79 cm
+    rects.push(...rowRects(5.7, 17.5, [13,14,13,14,13,14,13]));
+    rects.push(...rowRects(23.85, 17.5, [16,15,17,16,15,17]));
+    rects.push(...rowRects(42.0, 17.5, [12,13,12,13,12,13,12,13]));
+    rects.push(...rowRects(60.15, 17.5, [14,13,15,13,14,13,15]));
+
+    // faixa central: foto principal 30x40 em x=35 / y=80
+    // 5 fotos por lado, com leve variação de dimensões.
+    const sideGap = .65;
+    const leftX = 1.2;
+    const sideW = 32.8;
+    const colGap = .65;
+    const col1 = 15.1;
+    const col2 = sideW - col1 - colGap;
+    const bandY = 79.8;
+    const bandH = 40.4;
+
+    // esquerda: 3 na primeira coluna, 2 na segunda
+    const lh3 = (bandH - sideGap*2)/3;
+    for(let i=0;i<3;i++) rects.push(cmRect(leftX, bandY+i*(lh3+sideGap), col1, lh3));
+    const lh2 = (bandH - sideGap)/2;
+    for(let i=0;i<2;i++) rects.push(cmRect(leftX+col1+colGap, bandY+i*(lh2+sideGap), col2, lh2));
+
+    // direita, espelhado
+    const rightX = PANEL_W_CM - 1.2 - sideW;
+    for(let i=0;i<2;i++) rects.push(cmRect(rightX, bandY+i*(lh2+sideGap), col2, lh2));
+    for(let i=0;i<3;i++) rects.push(cmRect(rightX+col2+colGap, bandY+i*(lh3+sideGap), col1, lh3));
+
+    // área inferior: 121 cm a 199 cm
+    rects.push(...rowRects(121.0, 18.6, [14,13,15,13,14,13,15]));
+    rects.push(...rowRects(140.25, 18.6, [12,13,12,13,12,13,12,13]));
+    rects.push(...rowRects(159.5, 18.6, [16,15,17,16,15,17]));
+    rects.push(...rowRects(178.75, 19.0, [13,14,13,14,13,14,13]));
+
+    if(rects.length !== 66) console.warn('Layout gerou', rects.length, 'slots; esperado: 66.');
+    rects.forEach((r,i)=>r.index=i+1);
+
+    const center = cmRect(
+      (PANEL_W_CM-CENTER_W_CM)/2,
+      80.0,
+      CENTER_W_CM,
+      CENTER_H_CM,
+      'center'
+    );
+    center.index = 'C';
+
+    return {rects, center};
+  }
+
+  const layout = buildLayout();
+
+  function makeState(rect){
+    return {
+      id: rect.type === 'center' ? 'center' : `s${rect.index}`,
+      rect,
+      file:null,
+      url:null,
+      img:null,
+      dx:0,
+      dy:0,
+      zoom:1,
+      el:null,
+      canvas:null
+    };
+  }
+
+  layout.rects.forEach(r=>states.push(makeState(r)));
+  states.push(makeState(layout.center));
+
+  function pct(v,total){ return `${(v/total)*100}%`; }
+
+  function createSlots(){
+    states.forEach(st=>{
+      const el = document.createElement('div');
+      el.className = `photo-slot empty ${st.rect.type === 'center' ? 'central' : ''}`;
+      el.dataset.id = st.id;
+      el.dataset.index = st.rect.type === 'center' ? '' : st.rect.index;
+      el.style.left = pct(st.rect.x,PANEL_W_CM);
+      el.style.top = pct(st.rect.y,PANEL_H_CM);
+      el.style.width = pct(st.rect.w,PANEL_W_CM);
+      el.style.height = pct(st.rect.h,PANEL_H_CM);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 180;
+      canvas.height = 180;
+      el.appendChild(canvas);
+
+      const badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = st.rect.type === 'center' ? 'Principal' : `Foto ${st.rect.index}`;
+      el.appendChild(badge);
+
+      el.addEventListener('pointerdown', onPointerDown);
+      el.addEventListener('dblclick', ()=>resetState(st.id));
+      el.addEventListener('click', ()=>selectState(st.id));
+
+      st.el = el;
+      st.canvas = canvas;
+      panel.appendChild(el);
+    });
+
+    requestAnimationFrame(renderAll);
+  }
+
+  function findState(id){ return states.find(s=>s.id===id); }
+
+  function selectState(id){
+    selectedId = id;
+    states.forEach(s=>s.el.classList.toggle('selected',s.id===id));
+    const st = findState(id);
+    selectedLabel.textContent = st.rect.type === 'center' ? 'Foto principal' : `Foto ${st.rect.index}`;
+    zoomRange.disabled = !st.img;
+    resetBtn.disabled = !st.img;
+    replaceBtn.disabled = false;
+    zoomRange.value = st.zoom;
+    zoomValue.textContent = `${st.zoom.toFixed(2)}×`;
+  }
+
+  function resetState(id){
+    const st = findState(id);
+    if(!st) return;
+    st.dx=0; st.dy=0; st.zoom=1;
+    if(selectedId===id){
+      zoomRange.value='1';
+      zoomValue.textContent='1.00×';
+    }
+    renderState(st);
+  }
+
+  function canvasDisplaySize(st){
+    const rect = st.el.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    return {
+      w: Math.max(80, Math.round(rect.width*dpr)),
+      h: Math.max(80, Math.round(rect.height*dpr))
+    };
+  }
+
+  function drawCover(ctx,img,w,h,st){
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#f4f4f5';
+    ctx.fillRect(0,0,w,h);
+    if(!img) return;
+
+    const base = Math.max(w/img.naturalWidth, h/img.naturalHeight);
+    const scale = base*st.zoom;
+    const dw = img.naturalWidth*scale;
+    const dh = img.naturalHeight*scale;
+    const x = (w-dw)/2 + st.dx*w;
+    const y = (h-dh)/2 + st.dy*h;
+    ctx.drawImage(img,x,y,dw,dh);
+  }
+
+  function renderState(st){
+    if(!st.canvas) return;
+    const size = canvasDisplaySize(st);
+    if(st.canvas.width!==size.w || st.canvas.height!==size.h){
+      st.canvas.width=size.w; st.canvas.height=size.h;
+    }
+    const ctx=st.canvas.getContext('2d',{alpha:false});
+    drawCover(ctx,st.img,st.canvas.width,st.canvas.height,st);
+    st.el.classList.toggle('empty',!st.img);
+  }
+
+  function renderAll(){ states.forEach(renderState); }
+
+  async function loadFileIntoState(file,st){
+    if(!file || !file.type.startsWith('image/')) return;
+    if(st.url) URL.revokeObjectURL(st.url);
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    await new Promise((resolve,reject)=>{
+      img.onload=resolve; img.onerror=reject; img.src=url;
+    });
+    st.file=file; st.url=url; st.img=img; st.dx=0; st.dy=0; st.zoom=1;
+    renderState(st);
+  }
+
+  async function loadSurroundFiles(fileList){
+    const files=[...fileList].filter(f=>f.type.startsWith('image/')).slice(0,66);
+    const surrounding=states.filter(s=>s.rect.type==='surround');
+    for(let i=0;i<files.length;i++){
+      await loadFileIntoState(files[i],surrounding[i]);
+    }
+    updateCounts();
+  }
+
+  function updateCounts(){
+    const n=states.filter(s=>s.rect.type==='surround' && s.img).length;
+    countSurround.textContent=`${n} / 66`;
+    const c=findState('center');
+    countCenter.textContent=c.img?'carregada':'não carregada';
+  }
+
+  function onPointerDown(e){
+    const st=findState(e.currentTarget.dataset.id);
+    selectState(st.id);
+    if(!st.img) return;
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    drag={id:st.id,startX:e.clientX,startY:e.clientY,startDx:st.dx,startDy:st.dy};
+    e.preventDefault();
+  }
+
+  window.addEventListener('pointermove',e=>{
+    if(!drag) return;
+    const st=findState(drag.id);
+    const r=st.el.getBoundingClientRect();
+    st.dx=drag.startDx+(e.clientX-drag.startX)/r.width;
+    st.dy=drag.startDy+(e.clientY-drag.startY)/r.height;
+    renderState(st);
+  });
+
+  window.addEventListener('pointerup',()=>drag=null);
+
+  surroundInput.addEventListener('change',async e=>{
+    await loadSurroundFiles(e.target.files);
+    surroundInput.value='';
+  });
+
+  centerInput.addEventListener('change',async e=>{
+    const f=e.target.files?.[0];
+    if(f) await loadFileIntoState(f,findState('center'));
+    centerInput.value='';
+    updateCounts();
+  });
+
+  zoomRange.addEventListener('input',()=>{
+    if(!selectedId) return;
+    const st=findState(selectedId);
+    if(!st.img) return;
+    st.zoom=parseFloat(zoomRange.value);
+    zoomValue.textContent=`${st.zoom.toFixed(2)}×`;
+    renderState(st);
+  });
+
+  resetBtn.addEventListener('click',()=>selectedId && resetState(selectedId));
+  replaceBtn.addEventListener('click',()=>selectedId && replaceInput.click());
+  replaceInput.addEventListener('change',async e=>{
+    const f=e.target.files?.[0];
+    const st=selectedId && findState(selectedId);
+    if(f && st) await loadFileIntoState(f,st);
+    replaceInput.value='';
+    updateCounts();
+  });
+
+  clearBtn.addEventListener('click',()=>{
+    if(!confirm('Remover todas as fotos do painel?')) return;
+    states.forEach(st=>{
+      if(st.url) URL.revokeObjectURL(st.url);
+      st.file=null; st.url=null; st.img=null; st.dx=0; st.dy=0; st.zoom=1;
+      renderState(st);
+    });
+    selectedId=null;
+    states.forEach(s=>s.el.classList.remove('selected'));
+    selectedLabel.textContent='nenhuma';
+    zoomRange.disabled=true; resetBtn.disabled=true; replaceBtn.disabled=true;
+    updateCounts();
+  });
+
+  shuffleBtn.addEventListener('click',()=>{
+    const surrounding=states.filter(s=>s.rect.type==='surround');
+    const loaded=surrounding.filter(s=>s.img).map(s=>({
+      file:s.file,url:s.url,img:s.img,dx:s.dx,dy:s.dy,zoom:s.zoom
+    }));
+    for(let i=loaded.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [loaded[i],loaded[j]]=[loaded[j],loaded[i]];
+    }
+    surrounding.forEach((s,i)=>{
+      const d=loaded[i];
+      if(d){
+        s.file=d.file;s.url=d.url;s.img=d.img;s.dx=0;s.dy=0;s.zoom=1;
+      }
+      renderState(s);
+    });
+  });
+
+  // Arrastar arquivos para a página: se vier 1 arquivo com "principal" no nome,
+  // ele vai para o centro. Os demais são distribuídos ao redor.
+  let dragDepth=0;
+  window.addEventListener('dragenter',e=>{e.preventDefault();dragDepth++;dropOverlay.classList.add('active')});
+  window.addEventListener('dragleave',()=>{dragDepth--;if(dragDepth<=0){dragDepth=0;dropOverlay.classList.remove('active')}})
+  window.addEventListener('dragover',e=>e.preventDefault());
+  window.addEventListener('drop',async e=>{
+    e.preventDefault();dragDepth=0;dropOverlay.classList.remove('active');
+    const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/'));
+    if(!files.length)return;
+    const principal=files.find(f=>/principal|central|centro/i.test(f.name));
+    if(principal) await loadFileIntoState(principal,findState('center'));
+    await loadSurroundFiles(files.filter(f=>f!==principal));
+    updateCounts();
+  });
+
+  function slotCanvasForExport(st,dpi){
+    // PDF trabalha em mm; o canvas é criado na resolução escolhida.
+    const wIn=(st.rect.w*10)/25.4;
+    const hIn=(st.rect.h*10)/25.4;
+    const w=Math.max(2,Math.round(wIn*dpi));
+    const h=Math.max(2,Math.round(hIn*dpi));
+    const c=document.createElement('canvas');
+    c.width=w;c.height=h;
+    const ctx=c.getContext('2d',{alpha:false});
+    drawCover(ctx,st.img,w,h,st);
+    return c;
+  }
+
+  async function exportPDF(){
+    const missing=states.filter(s=>!s.img);
+    if(missing.length){
+      const ok=confirm(`Ainda faltam ${missing.length} foto(s). Deseja gerar o PDF mesmo assim?`);
+      if(!ok)return;
+    }
+    if(!window.jspdf?.jsPDF){
+      alert('Não foi possível carregar o módulo de PDF. Verifique sua conexão com a internet e tente novamente.');
+      return;
+    }
+
+    exportBtn.disabled=true;
+    exportStatus.textContent='Preparando PDF...';
+    progressBar.style.width='2%';
+
+    try{
+      const {jsPDF}=window.jspdf;
+      // 100 x 200 cm = 1000 x 2000 mm
+      const pdf=new jsPDF({
+        orientation:'portrait',
+        unit:'mm',
+        format:[1000,2000],
+        compress:true,
+        putOnlyUsedFonts:true
+      });
+
+      // fundo branco
+      pdf.setFillColor(255,255,255);
+      pdf.rect(0,0,1000,2000,'F');
+
+      const dpi=parseInt(dpiSelect.value,10);
+      const loaded=states.filter(s=>s.img);
+      let done=0;
+
+      for(const st of loaded){
+        const c=slotCanvasForExport(st,dpi);
+        const data=c.toDataURL('image/jpeg',0.93);
+
+        pdf.addImage(
+          data,'JPEG',
+          st.rect.x*10,
+          st.rect.y*10,
+          st.rect.w*10,
+          st.rect.h*10,
+          undefined,
+          'FAST'
+        );
+
+        done++;
+        progressBar.style.width=`${Math.round((done/Math.max(loaded.length,1))*96)}%`;
+        exportStatus.textContent=`Processando ${done} de ${loaded.length} fotos...`;
+
+        // devolve tempo ao navegador para evitar travamento em painéis grandes
+        if(done%4===0) await new Promise(r=>setTimeout(r,0));
+      }
+
+      progressBar.style.width='100%';
+      exportStatus.textContent='Finalizando arquivo...';
+      await new Promise(r=>setTimeout(r,30));
+      pdf.save(`painel-100x200cm-${dpi}dpi.pdf`);
+      exportStatus.textContent='PDF criado com sucesso.';
+    }catch(err){
+      console.error(err);
+      exportStatus.textContent='Erro ao gerar o PDF.';
+      alert('O navegador não conseguiu concluir o PDF. Tente 150 ou 200 dpi, ou use menos abas abertas.');
+    }finally{
+      exportBtn.disabled=false;
+      setTimeout(()=>progressBar.style.width='0%',1200);
+    }
+  }
+
+  exportBtn.addEventListener('click',exportPDF);
+
+  window.addEventListener('resize',()=>{
+    clearTimeout(window.__resizeTimer);
+    window.__resizeTimer=setTimeout(renderAll,120);
+  });
+
+  createSlots();
+  updateCounts();
+})();
+</script>
+</body>
+</html>
