@@ -1,9 +1,7 @@
 # BigCorps Tecnologia - Site Estático
-
 Site profissional em HTML puro para BigCorps Tecnologia - Soluções em IA e Automação.
 
 ## 📋 Estrutura do Projeto
-
 ```
 bigcorps-new/
 ├── public/
